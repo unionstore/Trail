@@ -366,10 +366,10 @@
         <div class="page-header"><h2 class="page-title">Wallet &amp; <span>Add Money</span></h2></div>
         <div style="background:var(--bg-card);padding:24px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:540px;margin:0 auto;text-align:center;">
             <h3 style="margin-bottom:8px;"><i class="fas fa-bolt" style="color:var(--accent-blue);"></i> Instant Payment Gateway</h3>
-            <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Scan dynamic QR code or use active payment channels.</p>
+            <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Use secure ready-made checkout page to add funds.</p>
             <div style="margin-bottom:12px;"><input id="add-amount" placeholder="Amount (₹)" type="number" min="1" style="width:100%;padding:12px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);color:#fff;"/></div>
             <div style="margin-bottom:16px;"><input id="add-phone" placeholder="WhatsApp / Mobile Number" type="tel" style="width:100%;padding:12px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);color:#fff;"/></div>
-            <button class="btn-primary-solid" id="btn-submit-payment" style="margin-bottom:20px;"><i class="fas fa-qrcode"></i> Generate QR Code</button>
+            <button class="btn-primary-solid" id="btn-submit-payment" style="margin-bottom:20px;"><i class="fas fa-qrcode"></i> Open Secure Checkout Page</button>
 
             <div id="user-payment-methods-box" style="background:var(--bg-input);padding:14px;border-radius:10px;border:1px solid var(--border-color);margin-bottom:20px;text-align:left;">
                 <h4 style="font-size:13px;margin-bottom:6px;color:var(--text-primary);"><i class="fas fa-university"></i> Active Payment Channels</h4>
@@ -487,23 +487,13 @@
 
 <div class="modal-overlay hidden" id="modal-fam-payment">
     <div class="modal" style="text-align:center; max-width: 440px;">
-        <h3 style="margin-bottom:8px;"><i class="fas fa-qrcode" style="color:var(--accent-blue);"></i> Scan &amp; Pay</h3>
-        <p style="color:var(--text-secondary);font-size:12px;margin-bottom:14px;">Scan the QR code below using any UPI app or FamPay:</p>
-        
-        <div style="background:var(--bg-input);padding:16px;border-radius:14px;border:1.5px solid var(--border-color);margin-bottom:14px;display:inline-block;">
-            <img id="gateway-qr-img" src="" alt="Payment QR" style="width:200px;height:200px;object-fit:contain;border-radius:8px;display:block;margin:0 auto;"/>
+        <h3 style="margin-bottom:6px;"><i class="fas fa-external-link-alt" style="color:var(--accent-blue);"></i> Complete Payment</h3>
+        <p style="color:var(--text-secondary);font-size:12px;margin-bottom:12px;">Click below to open the secure ready-made checkout page:</p>
+        <div style="margin-bottom:16px;">
+            <a id="ready-checkout-link" href="#" target="_blank" class="btn-primary-solid" style="padding:14px; font-size:14px;"><i class="fas fa-qrcode"></i> Open Secure Checkout Page</a>
         </div>
-
-        <div style="background:var(--bg-input);padding:12px 16px;border-radius:10px;border:1px solid var(--border-color);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
-            <div style="text-align:left;">
-                <div style="font-size:10px;color:var(--text-secondary);">UPI ID</div>
-                <strong id="gateway-upi-text" style="font-size:13px;color:var(--accent-blue);">-</strong>
-            </div>
-            <button class="btn-outline" style="padding:6px 12px;font-size:11px;" onclick="navigator.clipboard.writeText(document.getElementById('gateway-upi-text').innerText); showToast('UPI ID Copied!');">Copy</button>
-        </div>
-
-        <p style="color:var(--accent-gold);font-size:11px;margin-bottom:14px;">After payment, click verify below to instantly add funds.</p>
-        <button class="btn-primary-solid" id="btn-manual-verify" style="margin-bottom:10px;background:var(--accent-green);padding:12px;"><i class="fas fa-check-circle"></i> I Have Paid / Verify Now</button>
+        <p style="color:var(--accent-gold);font-size:11px;margin-bottom:12px;">After payment is successful on the checkout page, click verify below to instantly add funds to your wallet.</p>
+        <button class="btn-primary-solid" id="btn-manual-verify" style="margin-bottom:8px;background:var(--accent-green);padding:12px;"><i class="fas fa-check-circle"></i> I Have Paid / Verify Now</button>
         <button class="btn-outline" style="width:100%;padding:10px;" onclick="closeFamModal()">Close / Cancel</button>
     </div>
 </div>
@@ -1323,7 +1313,7 @@
         }
     };
 
-    // STRICT FAMBAY GATEWAY VERIFICATION (API DOCUMENTATION COMPLIANT)
+    // STRICT CHECKOUT PAGE & VERIFICATION LOGIC (DOCUMENTATION COMPLIANT)
     async function checkAndCreditPayment(oid, amt) {
         if (hasCredited || !oid) return false;
         const apiKey = window.FAM_KEY || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
@@ -1426,7 +1416,7 @@
         const apiKey = window.FAM_KEY || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
         const createUrl = `https://fampaygateway.site/api/create_order.php?amount=${encodeURIComponent(amt)}&api_key=${encodeURIComponent(apiKey)}`;
         
-        setLoading(true, "Generating QR Code...");
+        setLoading(true, "Generating Checkout Page...");
         let data = null;
 
         try {
@@ -1447,12 +1437,11 @@
         if (data && (data.status === "success" || data.status === "SUCCESS" || data.data)) {
             const orderData = data.data || data;
             const oid = orderData.order_id;
-            const qrUrl = orderData.qr_url;
-            const upiId = orderData.upi_id;
             activeOrderId = oid;
 
-            document.getElementById('gateway-qr-img').src = qrUrl;
-            document.getElementById('gateway-upi-text').innerText = upiId || "9279500979@fam";
+            // Ready-made checkout page link as per documentation bonus
+            const readyCheckoutUrl = `https://fampaygateway.site/checkout.php?order_id=${encodeURIComponent(oid)}`;
+            document.getElementById('ready-checkout-link').href = readyCheckoutUrl;
             
             hasCredited = false;
             openModal('modal-fam-payment');
