@@ -488,11 +488,17 @@
 <div class="modal-overlay hidden" id="modal-fam-payment">
     <div class="modal" style="text-align:center; max-width: 440px;">
         <h3 style="margin-bottom:6px;"><i class="fas fa-external-link-alt" style="color:var(--accent-blue);"></i> Complete Payment</h3>
-        <p style="color:var(--text-secondary);font-size:12px;margin-bottom:12px;">Click below to open the secure ready-made checkout page:</p>
+        <p style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;">Click below to open the secure ready-made checkout page:</p>
+        
+        <!-- Display Order ID to user -->
+        <div style="background:var(--bg-input);padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);margin-bottom:12px;font-size:11px;color:var(--text-secondary);">
+            Order ID: <strong id="display-order-id" style="color:var(--accent-blue);">-</strong>
+        </div>
+
         <div style="margin-bottom:16px;">
             <a id="ready-checkout-link" href="#" target="_blank" class="btn-primary-solid" style="padding:14px; font-size:14px;"><i class="fas fa-qrcode"></i> Open Secure Checkout Page</a>
         </div>
-        <p style="color:var(--accent-gold);font-size:11px;margin-bottom:12px;">After payment is successful on the checkout page, click verify below to instantly add funds to your wallet.</p>
+        <p style="color:var(--accent-gold);font-size:11px;margin-bottom:12px;">After payment is successful, click verify below to add funds.</p>
         <button class="btn-primary-solid" id="btn-manual-verify" style="margin-bottom:8px;background:var(--accent-green);padding:12px;"><i class="fas fa-check-circle"></i> I Have Paid / Verify Now</button>
         <button class="btn-outline" style="width:100%;padding:10px;" onclick="closeFamModal()">Close / Cancel</button>
     </div>
@@ -553,7 +559,6 @@
     let pendingCheckout = null;
     let appliedDiscount = 0;
     let activeOrderId = null;
-    let hasCredited = false;
     let minTopupLimit = 1;
     let selectedCategory = 'all';
 
@@ -1313,9 +1318,21 @@
         }
     };
 
-    // STRICT CHECKOUT PAGE & VERIFICATION LOGIC (DOCUMENTATION COMPLIANT)
+    // STRICT CHECK & ANTI-DOUBLE-CREDIT VERIFICATION
     async function checkAndCreditPayment(oid, amt) {
-        if (hasCredited || !oid) return false;
+        if (!oid) return false;
+
+        // Check if this order has already been used/approved in database to prevent double crediting
+        const paymentSnap = await get(ref(db, `gateway_payments/${oid}`));
+        if (paymentSnap.exists()) {
+            const payInfo = paymentSnap.val();
+            if (payInfo.status === "approved") {
+                showToast("This order has already been verified and credited!", "error");
+                closeModal('modal-fam-payment');
+                return false;
+            }
+        }
+
         const apiKey = window.FAM_KEY || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
         const verifyEndpoint = `https://fampaygateway.site/api/verify.php?order_id=${encodeURIComponent(oid)}&api_key=${encodeURIComponent(apiKey)}&_t=${Date.now()}`;
 
@@ -1340,10 +1357,26 @@
         const statusVal = vData && (vData.status || vData.STATUS || '');
         const isSuccess = (typeof statusVal === 'string' && statusVal.toLowerCase() === 'success');
 
-        if (isSuccess && !hasCredited) {
-            hasCredited = true;
-
+        if (isSuccess) {
             const depositAmount = parseFloat(amt);
+            
+            // Double-check inside transaction to ensure absolute safety against race conditions
+            let creditedSuccessfully = false;
+            await runTransaction(ref(db, `gateway_payments/${oid}/status`), (currentStatus) => {
+                if (currentStatus === "approved") {
+                    return; // Already approved, abort transaction
+                }
+                creditedSuccessfully = true;
+                return "approved";
+            });
+
+            if (!creditedSuccessfully) {
+                showToast("This order has already been credited!", "error");
+                closeModal('modal-fam-payment');
+                return false;
+            }
+
+            // Credit balance to user
             await runTransaction(ref(db, `users/${currentUser.uid}/balance`), b => (b || 0) + depositAmount);
 
             if (userData.referredBy) {
@@ -1366,7 +1399,7 @@
             }
 
             const utrVal = vData?.data?.utr || vData?.UTR || "VERIFIED-SUCCESS";
-            await update(ref(db, `gateway_payments/${oid}`), { status: "approved", utr: utrVal });
+            await update(ref(db, `gateway_payments/${oid}`), { utr: utrVal });
 
             await push(ref(db, `topups/${currentUser.uid}`), {
                 orderId: oid, amount: depositAmount, utr: utrVal, date: new Date().toISOString()
@@ -1382,7 +1415,10 @@
 
     window.closeFamModal = async () => {
         if (activeOrderId) {
-            await update(ref(db, `gateway_payments/${activeOrderId}`), { status: "not received / expired" }).catch(() => {});
+            const pSnap = await get(ref(db, `gateway_payments/${activeOrderId}/status`));
+            if (pSnap.val() !== "approved") {
+                await update(ref(db, `gateway_payments/${activeOrderId}`), { status: "not received / expired" }).catch(() => {});
+            }
         }
         closeModal('modal-fam-payment');
     };
@@ -1393,7 +1429,6 @@
         
         setLoading(true, "Verifying payment with gateway...");
         try {
-            hasCredited = false;
             const success = await checkAndCreditPayment(activeOrderId, amt);
             if (!success) {
                 showToast("Payment not received or confirmed by gateway yet!", "error");
@@ -1439,11 +1474,10 @@
             const oid = orderData.order_id;
             activeOrderId = oid;
 
-            // Ready-made checkout page link as per documentation bonus
             const readyCheckoutUrl = `https://fampaygateway.site/checkout.php?order_id=${encodeURIComponent(oid)}`;
             document.getElementById('ready-checkout-link').href = readyCheckoutUrl;
+            document.getElementById('display-order-id').innerText = oid;
             
-            hasCredited = false;
             openModal('modal-fam-payment');
 
             await set(ref(db, `gateway_payments/${oid}`), { uid: currentUser.uid, email: currentUser.email, amount: parseFloat(amt), status: "pending", timestamp: new Date().toISOString() });
