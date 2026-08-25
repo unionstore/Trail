@@ -1324,7 +1324,7 @@
     };
 
     async function checkAndCreditPayment(oid, amt) {
-        if (hasCredited || !oid) return;
+        if (hasCredited || !oid) return false;
         const apiKey = window.FAM_KEY || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
         const verifyEndpoint = `https://fampaygateway.site/api/verify.php?order_id=${encodeURIComponent(oid)}&api_key=${encodeURIComponent(apiKey)}&_t=${Date.now()}`;
 
@@ -1339,19 +1339,16 @@
             try {
                 const res = await fetch(url, { cache: 'no-store' });
                 const json = await res.json();
-                if (json && (json.status || json.STATUS || json.success)) {
+                if (json) {
                     vData = json;
                     break;
                 }
             } catch (e) {}
         }
 
-        let gatewayStatus = vData && (vData.status || vData.STATUS);
-        if (!gatewayStatus || gatewayStatus !== "success") {
-            gatewayStatus = "success"; 
-        }
+        const gatewayStatus = vData && (vData.status || vData.STATUS || '').toLowerCase();
 
-        if (gatewayStatus && !hasCredited) {
+        if ((gatewayStatus === "success" || gatewayStatus === "approved") && !hasCredited) {
             hasCredited = true;
 
             const depositAmount = parseFloat(amt);
@@ -1386,7 +1383,7 @@
             showToast(`₹${amt} added successfully!`, "success");
             return true;
         } else {
-            showToast("Payment not verified yet. Please complete payment on checkout page.", "warning");
+            showToast("Payment not received or verified yet. Please complete payment first.", "error");
         }
         return false;
     }
