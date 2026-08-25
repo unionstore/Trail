@@ -1323,6 +1323,7 @@
         }
     };
 
+    // STRICT FAMBAY GATEWAY VERIFICATION (API DOCUMENTATION COMPLIANT)
     async function checkAndCreditPayment(oid, amt) {
         if (hasCredited || !oid) return false;
         const apiKey = window.FAM_KEY || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
@@ -1346,10 +1347,10 @@
             } catch (e) {}
         }
 
-        const gatewayStatus = vData && (vData.status || vData.STATUS || '').toLowerCase();
+        const statusVal = vData && (vData.status || vData.STATUS || '');
+        const isSuccess = (typeof statusVal === 'string' && statusVal.toLowerCase() === 'success');
 
-        // STRICT CHECK: Must be explicit "success" from the API response
-        if (gatewayStatus === "success" && !hasCredited) {
+        if (isSuccess && !hasCredited) {
             hasCredited = true;
 
             const depositAmount = parseFloat(amt);
@@ -1384,9 +1385,8 @@
             closeModal('modal-fam-payment');
             showToast(`₹${amt} added successfully!`, "success");
             return true;
-        } else {
-            showToast("Payment not verified yet by gateway. Please complete payment first.", "error");
         }
+
         return false;
     }
 
@@ -1404,7 +1404,12 @@
         setLoading(true, "Verifying payment with gateway...");
         try {
             hasCredited = false;
-            await checkAndCreditPayment(activeOrderId, amt);
+            const success = await checkAndCreditPayment(activeOrderId, amt);
+            if (!success) {
+                showToast("Payment not received or confirmed by gateway yet!", "error");
+            }
+        } catch (err) {
+            showToast("Verification error: " + (err.message || "Failed"), "error");
         } finally {
             setLoading(false);
         }
