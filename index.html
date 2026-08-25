@@ -8,17 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 
-<script>
-  (function() {
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
-        e.preventDefault(); return false;
-      }
-    });
-  })();
-</script>
-
 <style>
     :root {
         --bg-primary: #050608;
@@ -1321,11 +1310,10 @@
     async function checkAndCreditPayment(oid, amt) {
         if (!oid) return false;
 
-        // Check if already approved/credited in database
         const paymentSnap = await get(ref(db, `gateway_payments/${oid}`));
         if (paymentSnap.exists()) {
             const payInfo = paymentSnap.val();
-            if (payInfo.status === "approved") {
+            if (payInfo.status === "approved" || payInfo.status === "credited") {
                 showToast("This order has already been verified and credited!", "error");
                 closeModal('modal-fam-payment');
                 return false;
@@ -1342,7 +1330,6 @@
             verifyEndpoint
         ];
 
-        // Fresh request from starting without any caching
         for (let url of proxyList) {
             try {
                 const res = await fetch(url, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
@@ -1354,7 +1341,6 @@
             } catch (e) {}
         }
 
-        // Flexible status matching: checking for "success", "credited", "paid", "approved", "completed"
         const statusVal = vData && (vData.status || vData.STATUS || '');
         const isSuccess = (typeof statusVal === 'string' && ["success", "credited", "paid", "approved", "completed"].includes(statusVal.toLowerCase())) || (vData && vData.success === true);
 
@@ -1363,11 +1349,11 @@
             
             let creditedSuccessfully = false;
             await runTransaction(ref(db, `gateway_payments/${oid}/status`), (currentStatus) => {
-                if (currentStatus === "approved") {
+                if (currentStatus === "approved" || currentStatus === "credited") {
                     return; 
                 }
                 creditedSuccessfully = true;
-                return "approved";
+                return "credited";
             });
 
             if (!creditedSuccessfully) {
@@ -1398,7 +1384,7 @@
             }
 
             const utrVal = vData?.data?.utr || vData?.UTR || "VERIFIED-SUCCESS";
-            await update(ref(db, `gateway_payments/${oid}`), { utr: utrVal });
+            await update(ref(db, `gateway_payments/${oid}`), { status: "credited", utr: utrVal });
 
             await push(ref(db, `topups/${currentUser.uid}`), {
                 orderId: oid, amount: depositAmount, utr: utrVal, date: new Date().toISOString()
@@ -1415,7 +1401,7 @@
     window.closeFamModal = async () => {
         if (activeOrderId) {
             const pSnap = await get(ref(db, `gateway_payments/${activeOrderId}/status`));
-            if (pSnap.val() !== "approved") {
+            if (pSnap.val() !== "approved" && pSnap.val() !== "credited") {
                 await update(ref(db, `gateway_payments/${activeOrderId}`), { status: "not received / expired" }).catch(() => {});
             }
         }
