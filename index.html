@@ -369,7 +369,7 @@
             <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Scan dynamic QR code or use active payment channels.</p>
             <div style="margin-bottom:12px;"><input id="add-amount" placeholder="Amount (₹)" type="number" min="1" style="width:100%;padding:12px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);color:#fff;"/></div>
             <div style="margin-bottom:16px;"><input id="add-phone" placeholder="WhatsApp / Mobile Number" type="tel" style="width:100%;padding:12px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);color:#fff;"/></div>
-            <button class="btn-primary-solid" id="btn-submit-payment" style="margin-bottom:20px;"><i class="fas fa-qrcode"></i> Generate Checkout Page</button>
+            <button class="btn-primary-solid" id="btn-submit-payment" style="margin-bottom:20px;"><i class="fas fa-qrcode"></i> Generate QR Code</button>
 
             <div id="user-payment-methods-box" style="background:var(--bg-input);padding:14px;border-radius:10px;border:1px solid var(--border-color);margin-bottom:20px;text-align:left;">
                 <h4 style="font-size:13px;margin-bottom:6px;color:var(--text-primary);"><i class="fas fa-university"></i> Active Payment Channels</h4>
@@ -1348,7 +1348,8 @@
 
         const gatewayStatus = vData && (vData.status || vData.STATUS || '').toLowerCase();
 
-        if ((gatewayStatus === "success" || gatewayStatus === "approved") && !hasCredited) {
+        // STRICT CHECK: Must be explicit "success" from the API response
+        if (gatewayStatus === "success" && !hasCredited) {
             hasCredited = true;
 
             const depositAmount = parseFloat(amt);
@@ -1373,17 +1374,18 @@
                 }
             }
 
-            await update(ref(db, `gateway_payments/${oid}`), { status: "approved", utr: vData?.data?.utr || vData?.UTR || "CHECKOUT-AUTO" });
+            const utrVal = vData?.data?.utr || vData?.UTR || "VERIFIED-SUCCESS";
+            await update(ref(db, `gateway_payments/${oid}`), { status: "approved", utr: utrVal });
 
             await push(ref(db, `topups/${currentUser.uid}`), {
-                orderId: oid, amount: depositAmount, utr: vData?.data?.utr || vData?.UTR || "CHECKOUT-AUTO", date: new Date().toISOString()
+                orderId: oid, amount: depositAmount, utr: utrVal, date: new Date().toISOString()
             });
 
             closeModal('modal-fam-payment');
             showToast(`₹${amt} added successfully!`, "success");
             return true;
         } else {
-            showToast("Payment not received or verified yet. Please complete payment first.", "error");
+            showToast("Payment not verified yet by gateway. Please complete payment first.", "error");
         }
         return false;
     }
@@ -1398,6 +1400,7 @@
     document.getElementById('btn-manual-verify').onclick = async () => {
         const amt = document.getElementById('add-amount').value;
         if (!activeOrderId) return showToast("No active order to verify", "warning");
+        
         setLoading(true, "Verifying payment with gateway...");
         try {
             hasCredited = false;
