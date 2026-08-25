@@ -963,23 +963,32 @@
         try {
             const vRef = ref(db, `vouchers/${code}`);
             const snap = await get(vRef);
-            if (!snap.exists()) return showToast("Invalid voucher code", "error");
+            if (!snap.exists()) return showToast("Coupon Not Found!", "error");
 
             const vData = snap.val();
             if (vData.active === false) return showToast("Voucher is inactive", "error");
-            if (vData.redeemedBy && vData.redeemedBy[currentUser.uid]) return showToast("You already redeemed this voucher!", "error");
+            
+            if (vData.redeemedBy && vData.redeemedBy[currentUser.uid]) {
+                return showToast("You have already redeemed this voucher!", "error");
+            }
             
             const redeemedCount = vData.redeemedBy ? Object.keys(vData.redeemedBy).length : 0;
-            if (vData.maxUses && redeemedCount >= vData.maxUses) return showToast("Voucher usage limit reached!", "error");
+            if (vData.maxUses && redeemedCount >= vData.maxUses) {
+                return showToast("Voucher usage limit reached!", "error");
+            }
 
-            await update(ref(db, `vouchers/${code}/redeemedBy`), { [currentUser.uid]: true });
+            const updates = {};
+            updates[`vouchers/${code}/redeemedBy/${currentUser.uid}`] = true;
+            
             const newRedeemedCount = redeemedCount + 1;
             if (vData.maxUses && newRedeemedCount >= vData.maxUses) {
-                await update(ref(db, `vouchers/${code}`), { isRedeemed: true });
+                updates[`vouchers/${code}/isRedeemed`] = true;
             }
 
             const amountToAdd = parseFloat(vData.amount);
-            await runTransaction(ref(db, `users/${currentUser.uid}/balance`), b => (b || 0) + amountToAdd);
+            updates[`users/${currentUser.uid}/balance`] = (userData.balance || 0) + amountToAdd;
+
+            await update(ref(db), updates);
 
             document.getElementById('menu-voucher-input').value = '';
             showToast(`Successfully redeemed ₹${amountToAdd}!`, "success");
