@@ -1213,15 +1213,26 @@
             const selectedKeyId = stockKeys[0];
             const deliveredKey = stocksData[selectedKeyId];
 
-            await remove(ref(db, `panels/${pendingCheckout.panelId}/plans/${pendingCheckout.planKey}/stocks/${selectedKeyId}`));
-            await runTransaction(ref(db, `users/${currentUser.uid}/balance`), (bal) => Math.max(0, (bal || 0) - finalPrice));
-
             const cleanKey = deliveredKey.replace(/[.#$/[\]]/g, "_");
-            await set(ref(db, `sold_keys/${cleanKey}`), { key: deliveredKey, uid: currentUser.uid, soldAt: new Date().toISOString() });
+            const newPurchaseRef = push(ref(db, `purchases/${currentUser.uid}`));
+            const purchaseId = newPurchaseRef.key;
 
-            await push(ref(db, `purchases/${currentUser.uid}`), {
-                panelId: pendingCheckout.panelId, panelName: pendingCheckout.panelData.name, plan: pendingCheckout.plan.label, key: deliveredKey, link: pendingCheckout.panelData.link || "", price: finalPrice, email: currentUser.email, date: new Date().toISOString()
-            });
+            const updates = {};
+            updates[`panels/${pendingCheckout.panelId}/plans/${pendingCheckout.planKey}/stocks/${selectedKeyId}`] = null;
+            updates[`users/${currentUser.uid}/balance`] = Math.max(0, (userData.balance || 0) - finalPrice);
+            updates[`sold_keys/${cleanKey}`] = { key: deliveredKey, uid: currentUser.uid, soldAt: new Date().toISOString() };
+            updates[`purchases/${currentUser.uid}/${purchaseId}`] = {
+                panelId: pendingCheckout.panelId,
+                panelName: pendingCheckout.panelData.name,
+                plan: pendingCheckout.plan.label,
+                key: deliveredKey,
+                link: pendingCheckout.panelData.link || "",
+                price: finalPrice,
+                email: currentUser.email,
+                date: new Date().toISOString()
+            };
+
+            await update(ref(db), updates);
 
             closeModal('modal-checkout');
             document.getElementById('purchased-key-box').innerText = deliveredKey;
