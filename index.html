@@ -1232,6 +1232,23 @@
                 date: new Date().toISOString()
             };
 
+            const appliedCouponCode = document.getElementById('chk-coupon-code').value.trim().toUpperCase();
+            if (appliedCouponCode && appliedDiscount > 0) {
+                const cRef = ref(db, `coupons/${appliedCouponCode}`);
+                const cSnap = await get(cRef);
+                if (cSnap.exists()) {
+                    const currentUses = Number(cSnap.val().usedCount) || 0;
+                    updates[`coupons/${appliedCouponCode}/usedCount`] = currentUses + 1;
+                } else {
+                    const pcRef = ref(db, `personal_coupons/${appliedCouponCode}`);
+                    const pcSnap = await get(pcRef);
+                    if (pcSnap.exists()) {
+                        const currentPCUses = Number(pcSnap.val().usedCount) || 0;
+                        updates[`personal_coupons/${appliedCouponCode}/usedCount`] = currentPCUses + 1;
+                    }
+                }
+            }
+
             await update(ref(db), updates);
 
             closeModal('modal-checkout');
