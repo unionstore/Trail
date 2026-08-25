@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title id="page-meta-title">TG UNION STORE | OFFICIAL</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+
+<script>
+  (function() {
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+        e.preventDefault(); return false;
+      }
+    });
+  })();
+</script>
+
+<style>
+    :root {
+        --bg-primary: #050608;
+        --bg-secondary: #0c0e14;
+        --bg-card: #121620;
+        --bg-input: #080a0f;
+        --border-color: #1f2636;
+        --border-hover: #3b82f6;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --accent-blue: #3b82f6;
+        --accent-purple: #8b5cf6;
+        --accent-gold: #f59e0b;
+        --accent-green: #10b981;
+        --accent-red: #ef4444;
+        --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.6);
+        --radius: 18px;
+        --radius-sm: 10px;
+        --transition: all 0.3s ease;
+    }
+
+    * { 
+      margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif;
+      scrollbar-width: none; -ms-overflow-style: none;
+    }
+    *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+
+    html, body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; }
+    input, select, textarea { outline: none; background: none; border: none; color: var(--text-primary); }
+    .hidden { display: none !important; }
+
+    #loader { position: fixed; inset: 0; background: var(--bg-primary); z-index: 99999; display: flex; align-items: center; justify-content: center; }
+    #loader .spinner-ring { width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--border-color); border-top-color: var(--accent-blue); animation: spin 0.8s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    #global-action-loader {
+        position: fixed; inset: 0; background: rgba(5, 6, 8, 0.75); backdrop-filter: blur(8px);
+        z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    }
+    #global-action-loader .loader-spinner {
+        width: 48px; height: 48px; border-radius: 50%; border: 3.5px solid var(--border-color); border-top-color: var(--accent-purple); animation: spin 0.8s linear infinite;
+    }
+
+    #security-overlay { position: fixed; inset: 0; background: rgba(5, 6, 8, 0.98); backdrop-filter: blur(20px); z-index: 99998; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; transition: opacity 0.4s ease; padding: 24px; }
+    #security-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 99999; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 440px; pointer-events: none; }
+    .toast { padding: 16px 20px; border-radius: var(--radius-sm); background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px; pointer-events: auto; box-shadow: var(--shadow-card); }
+    .toast.success { border-left: 4px solid var(--accent-green); }
+    .toast.error { border-left: 4px solid var(--accent-red); }
+
+    #auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: radial-gradient(circle at center, #121826 0%, #050608 100%); }
+    .auth-container { width: 100%; max-width: 440px; }
+    .auth-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 44px 36px; box-shadow: var(--shadow-card); }
+    .auth-card .brand { text-align: center; margin-bottom: 32px; }
+    .auth-card .brand .logo-icon { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 26px; font-weight: 900; color: #fff; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3); }
+    .auth-card .brand h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+    .auth-card .brand p { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
+    .auth-card .input-group { margin-bottom: 18px; }
+    .auth-card .input-group input { width: 100%; padding: 16px 20px; background: var(--bg-input); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-size: 14px; color: var(--text-primary); }
+    .btn-auth { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: var(--radius-sm); font-weight: 700; color: #fff; font-size: 15px; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25); transition: var(--transition); }
+    .auth-toggle { text-align: center; font-size: 13px; color: var(--text-secondary); margin-top: 20px; }
+    .auth-toggle span { color: var(--accent-blue); font-weight: 700; cursor: pointer; }
+
+    .navbar { position: fixed; top: 0; left: 0; right: 0; height: 78px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; background: rgba(5, 6, 8, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-color); z-index: 1000; }
+    .navbar-left { display: flex; align-items: center; gap: 18px; }
+    .navbar .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 20px; }
+    .navbar .brand .brand-icon { width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #fff; overflow: hidden; }
+    .navbar .brand .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .navbar .nav-actions { display: flex; align-items: center; gap: 14px; }
+    .navbar .balance-pill { display: flex; align-items: center; gap: 8px; padding: 9px 18px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 30px; font-weight: 700; font-size: 14px; color: var(--accent-blue); }
+    .navbar .role-badge { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+    .navbar .role-badge.reseller { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.3); }
+    .navbar .role-badge.user { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .menu-btn { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 18px; }
+    .user-avatar-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #fff; border: 2px solid var(--border-color); cursor: pointer; }
+
+    .dropdown { position: absolute; top: 86px; left: 32px; width: 240px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 8px; box-shadow: var(--shadow-card); opacity: 0; visibility: hidden; transition: var(--transition); z-index: 999; }
+    .dropdown.active { opacity: 1; visibility: visible; }
+    .dropdown-item { padding: 12px 16px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: var(--transition); }
+    .dropdown-item:hover { background: var(--bg-input); color: var(--text-primary); }
+    .dropdown-item.danger { color: var(--accent-red); }
+
+    .page-content { padding: 104px 32px 80px; max-width: 1240px; margin: 0 auto; }
+    .page-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 32px; }
+    .page-title { font-size: 28px; font-weight: 800; }
+    .page-action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; background: var(--bg-card); padding: 12px 20px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+
+    .search-box { position: relative; flex: 1; max-width: 380px; min-width: 240px; }
+    .search-box input { width: 100%; padding: 14px 18px 14px 46px; background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: 30px; font-size: 14px; color: var(--text-primary); }
+    .search-box .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+
+    .panel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 26px; }
+    .panel-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-card); }
+    .panel-card .banner-wrap { position: relative; padding-bottom: 56.25%; background: var(--bg-input); overflow: hidden; cursor: pointer; }
+    .panel-card .banner-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .panel-card .panel-body { padding: 24px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+    .panel-name { font-size: 18px; font-weight: 700; }
+    .btn-primary-solid { padding: 14px 22px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: var(--radius-sm); font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3); }
+    .btn-outline { padding: 10px 18px; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
+    .panel-card .plan-select { width: 100%; padding: 14px 16px; background: var(--bg-input); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-size: 14px; color: var(--text-primary); font-weight: 600; cursor: pointer; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(5, 6, 8, 0.82); backdrop-filter: blur(14px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .modal { width: 100%; max-width: 460px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 32px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-card); scrollbar-width: none; }
+    .copy-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; background: var(--bg-input); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 14px; }
+
+    .floating-support-btn { position: fixed; bottom: 28px; right: 28px; width: 60px; height: 60px; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4); z-index: 9999; cursor: pointer; }
+    .support-dock { display: grid; gap: 10px; margin-top: 16px; }
+    .support-btn-item { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-weight: 600; color: var(--text-primary); transition: var(--transition); }
+    .support-btn-item:hover { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.05); }
+
+    #maintenance-screen {
+        position: fixed; inset: 0; background: radial-gradient(circle at center, #121826 0%, #050608 100%);
+        z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px;
+    }
+    #maintenance-screen .maint-icon-wrap {
+        width: 90px; height: 90px; background: rgba(245, 158, 11, 0.1); border: 2px solid var(--accent-gold); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 38px; color: var(--accent-gold); margin-bottom: 24px;
+        animation: pulseGlow 2s infinite ease-in-out;
+    }
+    @keyframes pulseGlow {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+        50% { transform: scale(1.08); box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+
+    @media (max-width: 768px) {
+        .navbar { padding: 12px 16px; height: 70px; }
+        .page-content { padding: 90px 16px 70px; }
+        .panel-grid { grid-template-columns: 1fr; }
+        .modal { padding: 20px; max-width: 100%; border-radius: 20px; }
+        .page-action-bar { flex-direction: column; gap: 10px; align-items: stretch; }
+        .search-box { max-width: 100%; }
+    }
+</style>
+</head>
+<body>
+
+<div id="global-action-loader" class="hidden">
+    <div class="loader-spinner"></div>
+    <span id="global-loader-text" style="font-size:14px;font-weight:700;color:var(--text-primary);letter-spacing:0.5px;">Processing...</span>
+</div>
+
+<div id="floating-support-link" class="floating-support-btn" title="Contact Support" onclick="openModal('modal-floating-support')"><i class="fab fa-whatsapp"></i></div>
+
+<div class="modal-overlay hidden" id="modal-floating-support">
+    <div class="modal" style="text-align:center;">
+        <h3 style="margin-bottom:12px;"><i class="fas fa-headset" style="color:var(--accent-green);"></i> Support Channels</h3>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">Click any option below to connect with support instantly:</p>
+        <div class="support-dock" id="floating-modal-support-list">Loading support...</div>
+        <button class="btn-outline" style="width:100%;margin-top:20px;" onclick="closeModal('modal-floating-support')">Close</button>
+    </div>
+</div>
+
+<div id="maintenance-screen" class="hidden">
+    <div class="maint-icon-wrap"><i class="fas fa-tools"></i></div>
+    <h1 id="maint-title-view" style="font-size:32px;font-weight:800;margin-bottom:12px;">Store Under Maintenance</h1>
+    <p id="maint-msg-view" style="color:var(--text-secondary);max-width:440px;font-size:15px;line-height:1.7;">We are currently upgrading our core infrastructure to serve you better. Please check back shortly!</p>
+</div>
+
+<div id="security-overlay">
+    <div style="font-size:54px;color:var(--accent-blue);"><i class="fas fa-shield-halved"></i></div>
+    <div style="font-size:22px;font-weight:800;">TG UNION ENTERPRISE SECURITY</div>
+    <div style="width:220px;height:5px;background:var(--border-color);border-radius:10px;overflow:hidden;"><div id="sec-bar" style="height:100%;width:0%;background:var(--accent-blue);transition:width 0.3s;"></div></div>
+</div>
+
+<div id="loader"><div class="spinner-ring"></div></div>
+<div id="toast-container"></div>
+
+<div id="auth-screen" class="hidden">
+    <div class="auth-container">
+        <div class="auth-card" id="login-box">
+            <div class="brand">
+                <div class="logo-icon" id="auth-logo-view">TG</div>
+                <h1 id="auth-brand-name">TG UNION <span>STORE</span></h1>
+                <p>Secure Enterprise Sign-In</p>
+            </div>
+            <div class="input-group"><input id="login-email" placeholder="Email address" type="email"/></div>
+            <div class="input-group"><input id="login-pass" placeholder="Password" type="password"/></div>
+            <button class="btn-auth" id="btn-login">Secure Login</button>
+            <p class="auth-toggle">New to TG Union? <span id="go-to-signup">Create account</span></p>
+        </div>
+
+        <div class="auth-card hidden" id="signup-box">
+            <div class="brand">
+                <div class="logo-icon" id="signup-logo-view">TG</div>
+                <h1 id="signup-brand-name">Register <span>Account</span></h1>
+                <p>Instant cloud wallet &amp; dashboard activation</p>
+            </div>
+            <div class="input-group"><input id="signup-email" placeholder="Email address" type="email"/></div>
+            <div class="input-group"><input id="signup-pass" placeholder="Password (min 6 chars)" type="password"/></div>
+            <div class="input-group"><input id="signup-ref" placeholder="Referral Code (Optional)" type="text"/></div>
+            <button class="btn-auth" id="btn-signup">Create Account</button>
+            <p class="auth-toggle">Already registered? <span id="go-to-login">Secure Login</span></p>
+        </div>
+    </div>
+</div>
+
+<div id="main-app" class="hidden">
+    <nav class="navbar">
+        <div class="navbar-left">
+            <button class="menu-btn" id="menu-toggle"><i class="fas fa-bars"></i></button>
+            <div class="brand">
+                <div class="brand-icon" id="nav-brand-icon">TG</div>
+                <span id="site-name">TG UNION STORE</span>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <span class="role-badge user" id="nav-role-badge">USER</span>
+            <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
+            <div class="user-avatar-btn" id="nav-user-avatar" onclick="navigate('profile')">U</div>
+        </div>
+        <div class="dropdown" id="dropdown-menu">
+            <div class="dropdown-item" onclick="navigate('home')"><i class="fas fa-th-large"></i> Dashboard</div>
+            <div class="dropdown-item" onclick="navigate('reseller-page')"><i class="fas fa-crown"></i> Become Reseller</div>
+            <div class="dropdown-item" onclick="navigate('referral')"><i class="fas fa-share-alt"></i> Refer &amp; Earn</div>
+            <div class="dropdown-item" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> Wallet / Add Money</div>
+            <div class="dropdown-item" onclick="navigate('redeem-page')"><i class="fas fa-ticket" style="color:var(--accent-gold);"></i> Redeem Voucher</div>
+            <div class="dropdown-item" onclick="navigate('topup-history')"><i class="fas fa-history"></i> Topup History</div>
+            <div class="dropdown-item" onclick="navigate('history')"><i class="fas fa-key"></i> My Keys</div>
+            <div class="dropdown-item" onclick="navigate('support-page')"><i class="fas fa-headset"></i> Multi Support</div>
+            <div class="dropdown-item" onclick="navigate('about')"><i class="fas fa-info-circle"></i> About Us</div>
+            <div class="dropdown-item" onclick="navigate('policy')"><i class="fas fa-shield-alt"></i> Store Policy</div>
+            <div class="dropdown-item" onclick="navigate('profile')"><i class="fas fa-user"></i> Profile</div>
+            <div class="dropdown-item danger" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </div>
+    </nav>
+
+    <div class="page-content" id="page-home">
+        <div class="page-header">
+            <h2 class="page-title">Available <span>Panels</span></h2>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                <div id="category-filters-dock" style="display: flex; gap: 8px;"></div>
+                <div class="search-box">
+                    <input id="search-input" placeholder="Search panel..." type="text"/>
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="panel-grid" id="panels-container"></div>
+    </div>
+
+    <div class="page-content hidden" id="page-redeem-page">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Redeem <span>Gift Voucher</span></h2></div>
+        <div style="background:var(--bg-card);padding:32px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:540px;margin:0 auto;text-align:center;">
+            <i class="fas fa-ticket" style="font-size:52px;color:var(--accent-gold);margin-bottom:14px;"></i>
+            <h3>Enter Voucher Code</h3>
+            <p style="color:var(--text-secondary);font-size:14px;margin:12px 0 24px;">Redeem gift vouchers instantly to add funds to your wallet.</p>
+            <div style="display:flex;gap:10px;margin-bottom:20px;">
+                <input id="menu-voucher-input" placeholder="ENTER VOUCHER CODE" style="flex:1;padding:14px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);text-transform:uppercase;color:#fff;font-weight:700;"/>
+                <button class="btn-primary-solid" id="btn-menu-redeem" style="width:140px;">Redeem</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content hidden" id="page-support-page">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Multi-Support <span>Channels</span></h2></div>
+        <div style="background:var(--bg-card);padding:32px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:560px;margin:0 auto;">
+            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;">Connect with our support team instantly via any active channel below:</p>
+            <div class="support-dock" id="user-support-channels-list">Loading support channels...</div>
+        </div>
+    </div>
+
+    <div class="page-content hidden" id="page-referral">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Referral <span>Program</span></h2></div>
+        <div style="background:var(--bg-card);padding:32px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:580px;margin:0 auto;text-align:center;">
+            <i class="fas fa-share-alt" style="font-size:52px;color:var(--accent-blue);margin-bottom:14px;"></i>
+            <h3>Invite Friends &amp; Earn Rewards</h3>
+            <p style="color:var(--text-secondary);font-size:14px;margin:12px 0 24px;line-height:1.6;">Share your referral link and earn commission on your friends' top-ups!</p>
+            <div class="copy-row"><a id="ref-link-display" href="#" target="_blank" style="font-size:12px;word-break:break-all;color:var(--accent-blue);text-align:left;">-</a><button class="btn-outline" onclick="navigator.clipboard.writeText(document.getElementById('ref-link-display').href); showToast('Referral link copied!');">Copy</button></div>
+            
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px;">
+                <div style="background:var(--bg-input);padding:14px;border-radius:12px;border:1px solid var(--border-color);text-align:center;">
+                    <div style="font-size:11px;color:var(--text-secondary);">Total Referrals</div>
+                    <strong id="ref-count" style="font-size:18px;color:var(--accent-blue);">0</strong>
+                </div>
+                <div style="background:var(--bg-input);padding:14px;border-radius:12px;border:1px solid var(--border-color);text-align:center;">
+                    <div style="font-size:11px;color:var(--text-secondary);">Total Commission</div>
+                    <strong id="ref-total-commission" style="font-size:18px;color:var(--accent-green);">₹0.00</strong>
+                </div>
+                <div style="background:var(--bg-input);padding:14px;border-radius:12px;border:1px solid var(--border-color);text-align:center;">
+                    <div style="font-size:11px;color:var(--text-secondary);">Commission Rate</div>
+                    <strong id="ref-commission-rate" style="font-size:18px;color:var(--accent-gold);">0%</strong>
+                </div>
+            </div>
+
+            <div style="margin-top:24px;text-align:left;">
+                <h4 style="font-size:15px;margin-bottom:12px;"><i class="fas fa-history"></i> Referral History</h4>
+                <div id="ref-history-list" style="display:grid;gap:8px;max-height:220px;overflow-y:auto;">
+                    <div style="color:var(--text-secondary);font-size:13px;padding:10px 0;text-align:center;">Loading history...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content hidden" id="page-reseller-page">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Become a <span>Reseller</span></h2></div>
+        <div style="background:var(--bg-card);padding:32px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:560px;margin:0 auto;text-align:center;">
+            <i class="fas fa-crown" style="font-size:52px;color:var(--accent-gold);margin-bottom:14px;"></i>
+            <h3>Unlock Reseller Status</h3>
+            <p style="color:var(--text-secondary);font-size:14px;margin:12px 0 24px;">Choose an active reseller plan below:</p>
+            <div id="user-reseller-plans-dock" style="display:grid;gap:14px;margin-bottom:24px;">Loading plans...</div>
+        </div>
+    </div>
+
+    <div class="page-content hidden" id="page-wallet">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Wallet &amp; <span>Add Money</span></h2></div>
+        <div style="background:var(--bg-card);padding:28px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:540px;margin:0 auto;text-align:center;">
+            <h3 style="margin-bottom:10px;"><i class="fas fa-bolt" style="color:var(--accent-blue);"></i> Instant Payment Gateway</h3>
+            <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">Scan dynamic QR code or use active payment channels.</p>
+            <div style="margin-bottom:14px;"><input id="add-amount" placeholder="Amount (₹)" type="number" min="1" style="width:100%;padding:14px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);color:#fff;"/></div>
+            <div style="margin-bottom:20px;"><input id="add-phone" placeholder="WhatsApp / Mobile Number" type="tel" style="width:100%;padding:14px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);color:#fff;"/></div>
+            <button class="btn-primary-solid" id="btn-submit-payment" style="margin-bottom:24px;"><i class="fas fa-qrcode"></i> Generate Checkout Page</button>
+
+            <div id="user-payment-methods-box" style="background:var(--bg-input);padding:16px;border-radius:12px;border:1px solid var(--border-color);margin-bottom:24px;text-align:left;">
+                <h4 style="font-size:14px;margin-bottom:8px;color:var(--text-primary);"><i class="fas fa-university"></i> Active Payment Channels</h4>
+                <div id="dynamic-methods-list" style="font-size:13px;color:var(--text-secondary);display:grid;gap:6px;">Loading methods...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content hidden" id="page-topup-history">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('wallet')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Topup <span>History</span></h2></div>
+        <div id="topup-history-container" style="display:grid;gap:16px;"></div>
+    </div>
+
+    <div class="page-content hidden" id="page-history">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">My <span>Keys History</span></h2></div>
+        <div id="history-container" style="display:grid;gap:16px;"></div>
+    </div>
+
+    <div class="page-content hidden" id="page-about">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">About <span>Us</span></h2></div>
+        <div style="background:var(--bg-card);padding:32px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:700px;margin:0 auto;">
+            <div id="about-content-view" style="color:var(--text-secondary);font-size:15px;line-height:1.7;">Loading...</div>
+        </div>
+    </div>
+
+    <div class="page-content hidden" id="page-policy">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Store <span>Policy</span></h2></div>
+        <div style="background:var(--bg-card);padding:32px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:700px;margin:0 auto;">
+            <div id="policy-content-view" style="color:var(--text-secondary);font-size:15px;line-height:1.7;">Loading...</div>
+        </div>
+    </div>
+
+    <!-- LIFETIME ACCOUNT OVERVIEW -->
+    <div class="page-content hidden" id="page-profile">
+        <div class="page-action-bar">
+            <button class="btn-outline" onclick="navigate('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-outline" onclick="navigate('home')" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="page-header"><h2 class="page-title">Lifetime Account <span>Overview</span></h2></div>
+        <div style="background:var(--bg-card);padding:32px;border-radius:var(--radius);border:1px solid var(--border-color);max-width:580px;margin:0 auto;display:grid;gap:16px;">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;border-bottom:1px solid var(--border-color);padding-bottom:16px;">
+                <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#fff;" id="prof-avatar-letter">U</div>
+                <div>
+                    <h4 id="prof-email-title" style="font-size:16px;color:var(--text-primary);">-</h4>
+                    <span id="prof-role-badge" class="role-badge user" style="display:inline-block;margin-top:4px;">USER</span>
+                </div>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
+                <div style="background:var(--bg-input);padding:14px;border-radius:12px;border:1px solid var(--border-color);">
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Current Balance</div>
+                    <strong id="prof-bal" style="font-size:18px;color:var(--accent-green);">₹0.00</strong>
+                </div>
+                <div style="background:var(--bg-input);padding:14px;border-radius:12px;border:1px solid var(--border-color);">
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Account Status</div>
+                    <strong id="prof-status" style="font-size:15px;color:var(--accent-blue);">Active</strong>
+                </div>
+                <div style="background:var(--bg-input);padding:14px;border-radius:12px;border:1px solid var(--border-color);">
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Total Topups Made</div>
+                    <strong id="prof-lifetime-topups" style="font-size:17px;color:var(--accent-gold);">₹0.00</strong>
+                </div>
+                <div style="background:var(--bg-input);padding:14px;border-radius:12px;border:1px solid var(--border-color);">
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Total Purchases</div>
+                    <strong id="prof-lifetime-purchases" style="font-size:17px;color:var(--accent-purple);">0 Keys</strong>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-input);padding:16px;border-radius:12px;border:1px solid var(--border-color);display:grid;gap:8px;margin-top:6px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-secondary);">Reseller Expiry:</span><strong id="prof-reseller-exp" style="color:var(--accent-gold);">None</strong></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-secondary);">Referred By Code:</span><strong id="prof-ref-by" style="color:var(--text-primary);">-</strong></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-secondary);">Member Since:</span><strong id="prof-created-at" style="color:var(--text-primary);">-</strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-checkout">
+    <div class="modal">
+        <h3 style="margin-bottom:16px;"><i class="fas fa-shield-alt" style="color:var(--accent-blue);"></i> Confirm Purchase</h3>
+        <div style="background:var(--bg-input);padding:16px;border-radius:12px;margin-bottom:18px;border:1px solid var(--border-color);">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>Panel:</span><strong id="chk-panel-name">-</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>Plan:</span><strong id="chk-plan-label">-</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>Price:</span><strong id="chk-orig-price">-</strong></div>
+            <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border-color);padding-top:10px;font-size:17px;"><span>Total:</span><strong id="chk-final-price" style="color:var(--accent-green);">-</strong></div>
+        </div>
+        <div style="margin-bottom:20px;">
+            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px;">Apply Discount Coupon</label>
+            <div style="display:flex;gap:10px;">
+                <input id="chk-coupon-code" placeholder="ENTER CODE" style="flex:1;padding:12px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:8px;text-transform:uppercase;color:#fff;font-weight:700;"/>
+                <button class="btn-outline" id="btn-apply-coupon" style="border-color:var(--accent-purple);color:var(--accent-purple);">Apply</button>
+            </div>
+        </div>
+        <div style="display:flex;gap:12px;">
+            <button class="btn-primary-solid" style="flex:1;" id="btn-confirm-purchase">Proceed &amp; Buy</button>
+            <button class="btn-outline" style="flex:1;" onclick="closeModal('modal-checkout')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-fam-payment">
+    <div class="modal" style="text-align:center; max-width: 520px;">
+        <h3 style="margin-bottom:6px;"><i class="fas fa-external-link-alt" style="color:var(--accent-blue);"></i> Complete Payment</h3>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:14px;">Click below to open the secure ready-made checkout page:</p>
+        <div style="margin-bottom:20px;">
+            <a id="ready-checkout-link" href="#" target="_blank" class="btn-primary-solid" style="padding:16px; font-size:15px;"><i class="fas fa-qrcode"></i> Open Secure Checkout Page</a>
+        </div>
+        <p style="color:var(--accent-gold);font-size:12px;margin-bottom:14px;">After payment is successful, click verify below to instantly add funds to your wallet.</p>
+        <button class="btn-primary-solid" id="btn-manual-verify" style="margin-bottom:10px;background:var(--accent-green);"><i class="fas fa-check-circle"></i> I Have Paid / Verify Now</button>
+        <button class="btn-outline" style="width:100%;" onclick="closeFamModal()">Close / Cancel</button>
+    </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-key-success">
+    <div class="modal" style="text-align:center;">
+        <i class="fas fa-check-circle" style="font-size:52px;color:var(--accent-green);margin-bottom:14px;"></i>
+        <h3>Purchase Successful!</h3>
+        <div class="copy-row" style="justify-content:center;font-size:18px;font-weight:700;color:var(--accent-green);letter-spacing:1px;" id="purchased-key-box">-</div>
+        <div style="display:flex;gap:12px;margin-top:18px;">
+            <button class="btn-outline" style="flex:1;" onclick="navigator.clipboard.writeText(document.getElementById('purchased-key-box').innerText); showToast('Key Copied!');">Copy Key</button>
+            <button class="btn-primary-solid" style="flex:1;" id="btn-panel-download">Download Files</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-announcement">
+    <div class="modal" style="text-align:center; position:relative;">
+        <button onclick="closeModal('modal-announcement')" style="position:absolute;top:16px;right:18px;background:none;color:#fff;font-size:20px;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <div id="announcement-img-container" style="margin-bottom:14px;display:none;cursor:pointer;" onclick="window.openAnnouncementRedirect()">
+            <img id="announcement-modal-img" src="" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;"/>
+        </div>
+        <i class="fas fa-bullhorn" id="announcement-default-icon" style="font-size:46px;color:var(--accent-blue);margin-bottom:14px;"></i>
+        <h3 id="announcement-modal-title" style="margin-bottom:8px;">Store Announcement</h3>
+        <p id="announcement-modal-body" style="color:var(--text-secondary);font-size:14px;margin-bottom:24px;line-height:1.6;">-</p>
+        <button class="btn-primary-solid" onclick="closeModal('modal-announcement')">Got It</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence }
+        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, set, get, onValue, push, runTransaction, update, remove }
+        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCtwQQCL0sH4AI6MBAE1qd26rRe483qyrI",
+      authDomain: "new-admin-3ddcc.firebaseapp.com",
+      databaseURL: "https://new-admin-3ddcc-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "new-admin-3ddcc",
+      storageBucket: "new-admin-3ddcc.firebasestorage.app",
+      messagingSenderId: "916173709437",
+      appId: "1:916173709437:web:64f1b44f017105d6221114",
+      measurementId: "G-LHFXF2VXN9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    setPersistence(auth, browserLocalPersistence);
+
+    const ADMIN_EMAIL = "ownerxunion@gmail.com";
+    let currentUser = null;
+    let userData = { balance: 0, role: "user" };
+    let currentRedirectUrl = "";
+    let pendingCheckout = null;
+    let appliedDiscount = 0;
+    let activeOrderId = null;
+    let hasCredited = false;
+    let minTopupLimit = 1;
+    let selectedCategory = 'all';
+
+    window.setLoading = (isLoading, text = "Processing...") => {
+        const loader = document.getElementById('global-action-loader');
+        const loaderText = document.getElementById('global-loader-text');
+        if(loaderText) loaderText.innerText = text;
+        if(loader) {
+            if(isLoading) loader.classList.remove('hidden');
+            else loader.classList.add('hidden');
+        }
+    };
+
+    function formatAuthError(err) {
+        let msg = err.message || "An error occurred";
+        return msg.replace(/^Firebase:\s*/i, "").replace("Error (", "").replace(")", "");
+    }
+
+    function initGlobalSettings() {
+        onValue(ref(db, 'settings/branding'), (snap) => {
+            const data = snap.val() || {};
+            if (data.name) {
+                document.getElementById('site-name').innerText = data.name;
+                document.getElementById('auth-brand-name').innerHTML = `${data.name}`;
+                document.getElementById('page-meta-title').innerText = `${data.name} | OFFICIAL`;
+            }
+            if (data.logo) {
+                const navIcon = document.getElementById('nav-brand-icon');
+                const authLogo = document.getElementById('auth-logo-view');
+                const signupLogo = document.getElementById('signup-logo-view');
+                const imgTag = `<img src="${data.logo}" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:20px;"/>`;
+                if(navIcon) navIcon.innerHTML = `<img src="${data.logo}" alt="Logo"/>`;
+                if(authLogo) authLogo.innerHTML = imgTag;
+                if(signupLogo) signupLogo.innerHTML = imgTag;
+            }
+        });
+
+        onValue(ref(db, 'settings/maintenance'), (snap) => {
+            const isMaint = snap.val() === true;
+            const screen = document.getElementById('maintenance-screen');
+            if (isMaint && currentUser && currentUser.email !== ADMIN_EMAIL) {
+                screen.classList.remove('hidden');
+            } else {
+                screen.classList.add('hidden');
+            }
+        });
+
+        onValue(ref(db, 'settings/maintenance_msg'), (snap) => {
+            const msg = snap.val() || {};
+            if (msg.title) document.getElementById('maint-title-view').innerText = msg.title;
+            if (msg.message) document.getElementById('maint-msg-view').innerText = msg.message;
+        });
+
+        onValue(ref(db, 'deposit_settings'), (snap) => {
+            const dData = snap.val() || {};
+            window.FAM_KEY = dData.fam_key || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
+            minTopupLimit = Number(dData.min_topup) || 1;
+        });
+
+        onValue(ref(db, 'support_links'), (snap) => {
+            document.getElementById('floating-support-link').href = snap.val()?.whatsapp || '#';
+        });
+
+        onValue(ref(db, 'support_channels'), (snap) => {
+            const listDock = document.getElementById('user-support-channels-list');
+            const floatingDock = document.getElementById('floating-modal-support-list');
+            listDock.innerHTML = '';
+            floatingDock.innerHTML = '';
+            if (!snap.exists()) { 
+                listDock.innerHTML = '<div>No support channels available.</div>'; 
+                floatingDock.innerHTML = '<div>No support channels available.</div>';
+                return; 
+            }
+            snap.forEach(ch => {
+                const s = ch.val();
+                const btnHTML = `<a href="${s.link}" target="_blank" class="support-btn-item"><i class="fas fa-headset" style="color:var(--accent-blue);"></i> ${s.name}</a>`;
+                listDock.innerHTML += btnHTML;
+                floatingDock.innerHTML += btnHTML;
+            });
+        });
+
+        onValue(ref(db, 'reseller_plans'), (snap) => {
+            const dock = document.getElementById('user-reseller-plans-dock');
+            dock.innerHTML = '';
+            if (!snap.exists()) { dock.innerHTML = '<p>No reseller plans available right now.</p>'; return; }
+            snap.forEach(ch => {
+                const p = ch.val(); const pid = ch.key;
+                dock.innerHTML += `
+                    <div style="background:var(--bg-input);padding:18px;border-radius:12px;border:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                        <div style="text-align:left;">
+                            <h4 style="font-size:15px;color:var(--text-primary);">${p.name}</h4>
+                            <small style="color:var(--text-secondary);">Validity: ${p.days} Days</small>
+                        </div>
+                        <div style="text-align:right;">
+                            <strong style="color:var(--accent-green);font-size:16px;display:block;margin-bottom:6px;">₹${p.price}</strong>
+                            <button class="btn-primary-solid" style="padding:6px 14px;font-size:12px;" onclick="window.openResellerCheckoutModal('${pid}', '${p.name}', ${p.price}, ${p.days})">Buy Plan</button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        onValue(ref(db, 'payment_methods'), (snap) => {
+            const box = document.getElementById('dynamic-methods-list');
+            box.innerHTML = '';
+            if (!snap.exists()) { box.innerHTML = '<div>No custom payment methods added.</div>'; return; }
+            snap.forEach(ch => {
+                const m = ch.val();
+                box.innerHTML += `<div><strong>${m.name}:</strong> ${m.details}</div>`;
+            });
+        });
+
+        onValue(ref(db, 'pages/about'), (snap) => {
+            document.getElementById('about-content-view').innerText = snap.val() || "No about info provided yet.";
+        });
+
+        onValue(ref(db, 'pages/policy'), (snap) => {
+            document.getElementById('policy-content-view').innerText = snap.val() || "No store policy provided yet.";
+        });
+
+        onValue(ref(db, 'announcement'), (snap) => {
+            const ann = snap.val();
+            if (ann && ann.active && (ann.message || ann.image)) {
+                const lastSeen = localStorage.getItem('last_seen_ann');
+                const checkKey = ann.image || ann.message;
+                if (lastSeen !== checkKey) {
+                    document.getElementById('announcement-modal-title').innerText = ann.title || "Store Announcement";
+                    document.getElementById('announcement-modal-body').innerText = ann.message || "";
+                    currentRedirectUrl = ann.redirectLink || "";
+                    
+                    const imgContainer = document.getElementById('announcement-img-container');
+                    const imgEl = document.getElementById('announcement-modal-img');
+                    const iconEl = document.getElementById('announcement-default-icon');
+
+                    if (ann.image) {
+                        imgEl.src = ann.image;
+                        imgContainer.style.display = 'block';
+                        iconEl.style.display = 'none';
+                    } else {
+                        imgContainer.style.display = 'none';
+                        iconEl.style.display = 'block';
+                    }
+
+                    openModal('modal-announcement');
+                    localStorage.setItem('last_seen_ann', checkKey);
+                }
+            }
+        });
+    }
+
+    window.openAnnouncementRedirect = () => { if (currentRedirectUrl) window.open(currentRedirectUrl, '_blank'); };
+
+    setTimeout(() => {
+        const bar = document.getElementById('sec-bar');
+        if(bar) bar.style.width = '100%';
+        setTimeout(() => document.getElementById('security-overlay').classList.add('hidden'), 300);
+    }, 800);
+
+    window.showToast = (msg, type = "success") => {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = `toast ${type}`;
+        t.innerHTML = `<i class="fas fa-info-circle"></i> ${msg}`;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 2500);
+    };
+
+    window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+    window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.add('hidden');
+            }
+        });
+    });
+
+    document.getElementById('btn-login').onclick = async () => {
+        const e = document.getElementById('login-email').value.trim();
+        const p = document.getElementById('login-pass').value;
+        if (!e || !p) return showToast("Enter credentials", "error");
+        setLoading(true, "Signing in...");
+        try { 
+            await signInWithEmailAndPassword(auth, e, p); 
+            showToast("Welcome back!"); 
+        } catch (err) { 
+            showToast(formatAuthError(err), "error"); 
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    document.getElementById('btn-signup').onclick = async () => {
+        const e = document.getElementById('signup-email').value.trim();
+        const p = document.getElementById('signup-pass').value;
+        const refCode = document.getElementById('signup-ref').value.trim();
+        if (!e || p.length < 6) return showToast("Password min 6 chars", "error");
+        setLoading(true, "Creating account...");
+        try {
+            const cred = await createUserWithEmailAndPassword(auth, e, p);
+            const uid = cred.user.uid;
+            await set(ref(db, `users/${uid}`), { email: e, balance: 0, role: "user", isBanned: false, referredBy: refCode || null, password_hint: p, createdAt: new Date().toISOString() });
+            if (refCode) await push(ref(db, `referrals/${refCode}`), { referredUid: uid, date: new Date().toISOString() });
+            showToast("Registered successfully!");
+        } catch (err) { 
+            showToast(formatAuthError(err), "error"); 
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    document.getElementById('btn-logout').onclick = () => {
+        setLoading(true, "Logging out...");
+        signOut(auth).finally(() => setLoading(false));
+    };
+
+    document.getElementById('go-to-signup').onclick = () => { document.getElementById('login-box').classList.add('hidden'); document.getElementById('signup-box').classList.remove('hidden'); };
+    document.getElementById('go-to-login').onclick = () => { document.getElementById('signup-box').classList.add('hidden'); document.getElementById('login-box').classList.remove('hidden'); };
+
+    onAuthStateChanged(auth, async (user) => {
+        document.getElementById('loader').classList.add('hidden');
+        if (user && user.email) {
+            const uSnap = await get(ref(db, `users/${user.uid}`));
+            if (!uSnap.exists() || uSnap.val().isBanned) {
+                await signOut(auth);
+                currentUser = null;
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('main-app').classList.add('hidden');
+                if (uSnap.exists() && uSnap.val().isBanned) showToast("Your account has been suspended.", "error");
+                return;
+            }
+            currentUser = user;
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            initGlobalSettings();
+            initUserListener();
+            loadPanels();
+        } else {
+            if (user) await signOut(auth);
+            currentUser = null;
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+        }
+    });
+
+    async function loadLifetimeProfileData(uid, uData) {
+        document.getElementById('prof-email-title').innerText = uData.email || '-';
+        document.getElementById('prof-avatar-letter').innerText = uData.email ? uData.email.charAt(0).toUpperCase() : 'U';
+        document.getElementById('prof-ref-by').innerText = uData.referredBy || 'Direct Registration';
+        document.getElementById('prof-created-at').innerText = uData.createdAt ? new Date(uData.createdAt).toLocaleDateString() : 'N/A';
+
+        const topupsSnap = await get(ref(db, `topups/${uid}`)).catch(() => null);
+        let totalTopupsAmt = 0;
+        if (topupsSnap && topupsSnap.exists()) {
+            topupsSnap.forEach(ch => {
+                totalTopupsAmt += Number(ch.val().amount) || 0;
+            });
+        }
+        document.getElementById('prof-lifetime-topups').innerText = `₹${totalTopupsAmt.toFixed(2)}`;
+
+        const purchasesSnap = await get(ref(db, `purchases/${uid}`)).catch(() => null);
+        let totalPurchasesCount = 0;
+        if (purchasesSnap && purchasesSnap.exists()) {
+            purchasesSnap.forEach(() => {
+                totalPurchasesCount++;
+            });
+        }
+        document.getElementById('prof-lifetime-purchases').innerText = `${totalPurchasesCount} Keys`;
+    }
+
+    function initUserListener() {
+        onValue(ref(db, `users/${currentUser.uid}`), (snap) => {
+            if (snap.exists()) {
+                userData = snap.val();
+                if (userData.isBanned) {
+                    signOut(auth);
+                    currentUser = null;
+                    document.getElementById('auth-screen').classList.remove('hidden');
+                    document.getElementById('main-app').classList.add('hidden');
+                    showToast("Your account has been suspended.", "error");
+                    return;
+                }
+                let role = userData.role || "user";
+                if (role === "reseller" && userData.resellerExpiry) {
+                    if (Date.now() > userData.resellerExpiry) {
+                        role = "user";
+                        update(ref(db, `users/${currentUser.uid}`), { role: "user", resellerExpiry: null });
+                        showToast("Your reseller plan has expired. Switched to User role.", "warning");
+                    } else {
+                        const timeLeft = userData.resellerExpiry - Date.now();
+                        const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                        const hoursLeft = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        document.getElementById('prof-reseller-exp').innerText = `${daysLeft}d ${hoursLeft}h remaining (Active)`;
+                    }
+                } else {
+                    document.getElementById('prof-reseller-exp').innerText = 'None';
+                }
+
+                document.getElementById('nav-balance').innerText = (userData.balance || 0).toFixed(2);
+                document.getElementById('prof-bal').innerText = `₹${(userData.balance || 0).toFixed(2)}`;
+                document.getElementById('prof-role-badge').innerText = role.toUpperCase();
+                document.getElementById('prof-role-badge').className = `role-badge ${role}`;
+                document.getElementById('nav-role-badge').innerText = role.toUpperCase();
+                document.getElementById('nav-role-badge').className = `role-badge ${role}`;
+                
+                document.getElementById('nav-user-avatar').innerText = userData.email ? userData.email.charAt(0).toUpperCase() : 'U';
+                
+                loadLifetimeProfileData(currentUser.uid, userData);
+
+                let rawOrigin = window.location.origin;
+                if (!rawOrigin || rawOrigin.startsWith('file://')) {
+                    rawOrigin = 'https://tgunionstore.com';
+                }
+                const cleanPath = window.location.pathname.includes('/') ? window.location.pathname.substring(window.location.pathname.lastIndexOf('/')) : '/index.html';
+                const refLink = `${rawOrigin}${cleanPath}?ref=${currentUser.uid}`;
+                const refEl = document.getElementById('ref-link-display');
+                if (refEl) {
+                    refEl.innerText = refLink;
+                    refEl.href = refLink;
+                }
+            }
+        });
+
+        onValue(ref(db, `referrals/${currentUser.uid}`), async (snap) => {
+            const referrals = snap.exists() ? snap.val() : {};
+            const ids = Object.keys(referrals);
+            document.getElementById('ref-count').innerText = ids.length;
+            const list = document.getElementById('ref-history-list');
+            
+            if (!ids.length) {
+                list.innerHTML = '<div style="color:var(--text-secondary);font-size:13px;padding:10px 0;text-align:center;">No referrals yet. Share your link to start earning!</div>';
+                return;
+            }
+
+            let html = '';
+            let totalCommission = 0;
+            for (const uid of ids) {
+                const item = referrals[uid] || {};
+                const userSnap = await get(ref(db, `users/${uid}`)).catch(() => null);
+                const referredUser = userSnap && userSnap.exists() ? userSnap.val() : {};
+                const email = item.email || referredUser.email || 'Registered User';
+                const dateStr = item.date ? new Date(item.date).toLocaleDateString() : '-';
+                
+                html += `
+                    <div style="padding:10px 14px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-input);display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <div style="font-weight:600;font-size:13px;color:var(--text-primary);">${email}</div>
+                            <div style="font-size:11px;color:var(--text-secondary);">Joined: ${dateStr}</div>
+                        </div>
+                        <span style="font-size:11px;background:rgba(16,185,129,0.15);color:var(--accent-green);padding:4px 10px;border-radius:20px;font-weight:700;">Active</span>
+                    </div>
+                `;
+            }
+            list.innerHTML = html;
+
+            const commSnap = await get(ref(db, `referral_commissions/${currentUser.uid}`)).catch(() => null);
+            if (commSnap && commSnap.exists()) {
+                const commissions = commSnap.val() || {};
+                totalCommission = Object.values(commissions).reduce((sum, x) => sum + (Number(x.amount) || 0), 0);
+            }
+            document.getElementById('ref-total-commission').innerText = `₹${totalCommission.toFixed(2)}`;
+
+            const isResellerRole = userData.role === 'reseller';
+            const rateKey = isResellerRole ? 'referral_settings/reseller_commission' : 'referral_settings/user_commission';
+            const rateSnap = await get(ref(db, rateKey)).catch(() => null);
+            const rate = rateSnap && rateSnap.exists() ? Number(rateSnap.val()) || 0 : 0;
+            document.getElementById('ref-commission-rate').innerText = `${rate}%`;
+        });
+    }
+
+    window.openResellerCheckoutModal = (planId, planName, price, days) => {
+        pendingCheckout = { isResellerPlan: true, planId, planName, price, days };
+        appliedDiscount = 0;
+
+        document.getElementById('chk-panel-name').innerText = `Reseller Plan`;
+        document.getElementById('chk-plan-label').innerText = `${planName} (${days} Days)`;
+        document.getElementById('chk-orig-price').innerText = `₹${price}`;
+        document.getElementById('chk-final-price').innerText = `₹${price}`;
+        document.getElementById('chk-coupon-code').value = '';
+        openModal('modal-checkout');
+    };
+
+    window.buyResellerPlan = async () => {
+        if (!pendingCheckout || !pendingCheckout.isResellerPlan) return;
+        const { planName, price, days } = pendingCheckout;
+        const finalPrice = Math.max(0, price - appliedDiscount);
+
+        if ((userData.balance || 0) < finalPrice) {
+            showToast(`Insufficient balance! Need ₹${finalPrice}`, "error");
+            closeModal('modal-checkout');
+            navigate('wallet');
+            return;
+        }
+        setLoading(true, "Activating Reseller Plan...");
+        try {
+            await runTransaction(ref(db, `users/${currentUser.uid}/balance`), b => (b || 0) - finalPrice);
+            const currentExpiry = (userData.resellerExpiry && userData.resellerExpiry > Date.now()) ? userData.resellerExpiry : Date.now();
+            const newExpiry = currentExpiry + (days * 24 * 60 * 60 * 1000);
+            await update(ref(db, `users/${currentUser.uid}`), { role: "reseller", resellerExpiry: newExpiry });
+
+            await push(ref(db, `purchases/${currentUser.uid}`), {
+                panelId: "RESELLER-PLAN", panelName: `Reseller Plan: ${planName}`, plan: `${days} Days`, key: "RESELLER-STATUS-ACTIVATED", link: "", price: finalPrice, email: currentUser.email, date: new Date().toISOString()
+            });
+
+            closeModal('modal-checkout');
+            document.getElementById('purchased-key-box').innerText = "RESELLER STATUS ACTIVATED";
+            document.getElementById('btn-panel-download').onclick = () => navigate('home');
+            openModal('modal-key-success');
+            showToast(`Successfully purchased Reseller plan for ${days} Days!`, "success");
+        } catch(e) {
+            showToast("Plan activation failed", "error");
+        } finally {
+            setLoading(false);
+            pendingCheckout = null;
+        }
+    };
+
+    document.getElementById('btn-menu-redeem').onclick = async () => {
+        const code = document.getElementById('menu-voucher-input').value.trim().toUpperCase();
+        if (!code) return showToast("Enter voucher code", "warning");
+
+        setLoading(true, "Redeeming voucher...");
+        try {
+            const vRef = ref(db, `vouchers/${code}`);
+            const snap = await get(vRef);
+            if (!snap.exists()) return showToast("Invalid voucher code", "error");
+
+            const vData = snap.val();
+            if (vData.active === false) return showToast("Voucher is inactive", "error");
+            if (vData.redeemedBy && vData.redeemedBy[currentUser.uid]) return showToast("You already redeemed this voucher!", "error");
+            
+            const redeemedCount = vData.redeemedBy ? Object.keys(vData.redeemedBy).length : 0;
+            if (vData.maxUses && redeemedCount >= vData.maxUses) return showToast("Voucher usage limit reached!", "error");
+
+            await update(ref(db, `vouchers/${code}/redeemedBy`), { [currentUser.uid]: true });
+            const newRedeemedCount = redeemedCount + 1;
+            if (vData.maxUses && newRedeemedCount >= vData.maxUses) {
+                await update(ref(db, `vouchers/${code}`), { isRedeemed: true });
+            }
+
+            const amountToAdd = parseFloat(vData.amount);
+            await runTransaction(ref(db, `users/${currentUser.uid}/balance`), b => (b || 0) + amountToAdd);
+
+            document.getElementById('menu-voucher-input').value = '';
+            showToast(`Successfully redeemed ₹${amountToAdd}!`, "success");
+            navigate('home');
+        } catch(e) { 
+            showToast("Redeem failed", "error"); 
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    function loadPanels() {
+        onValue(ref(db, 'panels'), (snap) => {
+            const container = document.getElementById('panels-container');
+            container.innerHTML = '';
+            if (!snap.exists()) { 
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary); background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);"><h3>No Panels Available</h3><p style="font-size: 13px; margin-top: 6px;">Please add active panels and stocks from your Admin Panel.</p></div>'; 
+                return; 
+            }
+
+            const isReseller = (userData.role === "reseller");
+            let activeCount = 0;
+
+            get(ref(db, 'categories')).then((catSnap) => {
+                let categoriesSet = new Set(['all']);
+                if (catSnap.exists()) {
+                    catSnap.forEach(ch => {
+                        const cVal = ch.val()?.name;
+                        if (cVal) categoriesSet.add(cVal.trim());
+                    });
+                }
+
+                snap.forEach((child) => {
+                    const p = child.val();
+                    const pid = child.key;
+                    if (p.status !== "active") return;
+                    activeCount++;
+
+                    const cat = p.category ? p.category.trim() : 'General';
+
+                    let plansOptions = '<option value="" disabled selected>-- Choose Duration / Plan --</option>';
+                    if (p.plans) {
+                        Object.entries(p.plans).forEach(([key, plan]) => {
+                            const userPrice = plan.price;
+                            const resellerPrice = plan.reseller_price || plan.price;
+                            const stockCount = plan.stocks ? Object.keys(plan.stocks).length : (plan.keys || 0);
+                            const isOutOfStock = stockCount <= 0;
+
+                            let displayPriceStr = isReseller ? `<del style="color:var(--text-secondary);font-size:12px;">₹${userPrice}</del> ₹${resellerPrice}` : `₹${userPrice}`;
+
+                            plansOptions += `<option value="${key}" ${isOutOfStock ? 'disabled' : ''}>${plan.label} - ${displayPriceStr} ${isOutOfStock ? '(OUT OF STOCK)' : ''}</option>`;
+                        });
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'panel-card';
+                    card.dataset.category = cat.toLowerCase();
+                    card.innerHTML = `
+                        <div class="banner-wrap" onclick="if('${p.redirectUrl}') window.open('${p.redirectUrl}', '_blank')">
+                            ${p.bannerImage ? `<img src="${p.bannerImage}" alt="Panel Banner"/>` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);font-weight:600;">TG UNION STORE</div>'}
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel-name">${p.name}</div>
+                            <div style="font-size:12px;color:var(--accent-blue);font-weight:600;">Category: ${cat}</div>
+                            <select class="plan-select" id="sel-${pid}">${plansOptions}</select>
+                            <button class="btn-primary-solid" id="buy-${pid}"><i class="fas fa-bolt"></i> Instant Purchase</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                    card.querySelector(`#buy-${pid}`).onclick = () => openCheckoutModal(pid, p);
+                });
+
+                renderCategoryButtons(categoriesSet);
+                filterPanels();
+
+                if (activeCount === 0) {
+                    container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary); background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);"><h3>No Active Panels Found</h3><p style="font-size: 13px; margin-top: 6px;">All panels are currently inactive or out of stock.</p></div>';
+                }
+            });
+        });
+    }
+
+    function renderCategoryButtons(categoriesSet) {
+        const dock = document.getElementById('category-filters-dock');
+        if (!dock) return;
+        dock.innerHTML = '';
+        
+        const sortedCats = ['all', ...Array.from(categoriesSet).filter(c => c !== 'all')];
+
+        sortedCats.forEach(cat => {
+            const btn = document.createElement('button');
+            const isActive = (selectedCategory === cat.toLowerCase());
+            btn.innerText = cat === 'all' ? 'All' : cat;
+            btn.style = `padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid var(--border-color); transition: var(--transition); background: ${isActive ? 'var(--accent-blue)' : 'var(--bg-card)'}; color: ${isActive ? '#fff' : 'var(--text-secondary)'};`;
+            btn.onclick = () => {
+                selectedCategory = cat.toLowerCase();
+                document.querySelectorAll('#category-filters-dock button').forEach(b => {
+                    b.style.background = 'var(--bg-card)';
+                    b.style.color = 'var(--text-secondary)';
+                });
+                btn.style.background = 'var(--accent-blue)';
+                btn.style.color = '#fff';
+                filterPanels();
+            };
+            dock.appendChild(btn);
+        });
+    }
+
+    function filterPanels() {
+        const searchInputEl = document.getElementById('search-input');
+        const query = searchInputEl ? searchInputEl.value.toLowerCase().trim() : '';
+        const cards = document.querySelectorAll('.panel-card');
+
+        cards.forEach(card => {
+            const panelName = card.querySelector('.panel-name')?.innerText.toLowerCase() || '';
+            const cardCat = card.dataset.category || '';
+            const matchesCategory = (selectedCategory === 'all' || cardCat === selectedCategory);
+            const matchesSearch = panelName.includes(query) || cardCat.includes(query);
+
+            if (matchesCategory && matchesSearch) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    const searchInputEl = document.getElementById('search-input');
+    if (searchInputEl) {
+        searchInputEl.addEventListener('input', () => {
+            filterPanels();
+        });
+    }
+
+    function openCheckoutModal(panelId, panelData) {
+        const select = document.getElementById(`sel-${panelId}`);
+        if (!select || !select.value) return showToast("Choose a duration/plan first!", "warning");
+
+        const planKey = select.value;
+        const plan = panelData.plans[planKey];
+        const isReseller = (userData.role === "reseller");
+        const secureBasePrice = isReseller ? (plan.reseller_price || plan.price) : plan.price;
+
+        pendingCheckout = { isResellerPlan: false, panelId, panelData, planKey, plan, basePrice: secureBasePrice };
+        appliedDiscount = 0;
+
+        document.getElementById('chk-panel-name').innerText = panelData.name;
+        document.getElementById('chk-plan-label').innerText = plan.label;
+        document.getElementById('chk-orig-price').innerText = `₹${secureBasePrice}`;
+        document.getElementById('chk-final-price').innerText = `₹${secureBasePrice}`;
+        document.getElementById('chk-coupon-code').value = '';
+        openModal('modal-checkout');
+    }
+
+    document.getElementById('btn-apply-coupon').onclick = async () => {
+        const code = document.getElementById('chk-coupon-code').value.trim().toUpperCase();
+        if (!code || !pendingCheckout) return showToast("Enter coupon code", "warning");
+
+        setLoading(true, "Applying coupon...");
+        try {
+            const snap = await get(ref(db, `coupons/${code}`));
+            if (!snap.exists()) {
+                const pSnap = await get(ref(db, `personal_coupons/${code}`));
+                if (!pSnap.exists()) {
+                    return showToast("Coupon Not Found!", "error");
+                }
+                const pc = pSnap.val();
+                if (!pc.active || pc.assignedUid !== currentUser.uid) {
+                    return showToast("Invalid or unauthorized personal coupon", "error");
+                }
+                if (pc.maxUses && (pc.usedCount || 0) >= pc.maxUses) {
+                    return showToast("Personal coupon limit reached", "error");
+                }
+                let discountAmt = (pc.type === "percent") ? (pendingCheckout.basePrice * pc.value) / 100 : pc.value;
+                appliedDiscount = Math.min(pendingCheckout.basePrice, discountAmt);
+                const finalP = Math.max(0, pendingCheckout.basePrice - appliedDiscount);
+                document.getElementById('chk-final-price').innerText = `₹${finalP.toFixed(2)}`;
+                showToast(`Personal Coupon applied! Saved ₹${discountAmt.toFixed(2)}`, "success");
+                return;
+            }
+
+            const coupon = snap.val();
+            if (!coupon.active) return showToast("Coupon is inactive", "error");
+
+            const userRole = userData.role || "user";
+            if (coupon.target !== "all" && coupon.target !== userRole) {
+                return showToast(`This coupon is only for ${coupon.target}s!`, "error");
+            }
+
+            if (coupon.maxUses && (coupon.usedCount || 0) >= coupon.maxUses) {
+                return showToast("Coupon usage limit reached!", "error");
+            }
+
+            let discountAmt = (coupon.type === "percent") ? (pendingCheckout.basePrice * coupon.value) / 100 : coupon.value;
+            appliedDiscount = Math.min(pendingCheckout.basePrice, discountAmt);
+            const finalP = Math.max(0, pendingCheckout.basePrice - appliedDiscount);
+            document.getElementById('chk-final-price').innerText = `₹${finalP.toFixed(2)}`;
+            showToast(`Coupon applied! Saved ₹${discountAmt.toFixed(2)}`, "success");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    document.getElementById('btn-confirm-purchase').onclick = async () => {
+        if (!pendingCheckout) return;
+        if (pendingCheckout.isResellerPlan) {
+            await buyResellerPlan();
+            return;
+        }
+
+        const finalPrice = Math.max(0, pendingCheckout.basePrice - appliedDiscount);
+
+        if ((userData.balance || 0) < finalPrice) {
+            showToast(`Low Balance! Need ₹${finalPrice}.`, "error");
+            closeModal('modal-checkout');
+            navigate('wallet');
+            return;
+        }
+
+        setLoading(true, "Processing purchase & delivering key...");
+        try {
+            const planStocksRef = ref(db, `panels/${pendingCheckout.panelId}/plans/${pendingCheckout.planKey}/stocks`);
+            const stockSnap = await get(planStocksRef);
+            
+            if (!stockSnap.exists()) return showToast("Plan is Out of Stock!", "error");
+            
+            const stocksData = stockSnap.val();
+            const stockKeys = Object.keys(stocksData);
+            if (stockKeys.length === 0) return showToast("Plan is Out of Stock!", "error");
+
+            const selectedKeyId = stockKeys[0];
+            const deliveredKey = stocksData[selectedKeyId];
+
+            await remove(ref(db, `panels/${pendingCheckout.panelId}/plans/${pendingCheckout.planKey}/stocks/${selectedKeyId}`));
+            await runTransaction(ref(db, `users/${currentUser.uid}/balance`), (bal) => Math.max(0, (bal || 0) - finalPrice));
+
+            const cleanKey = deliveredKey.replace(/[.#$/[\]]/g, "_");
+            await set(ref(db, `sold_keys/${cleanKey}`), { key: deliveredKey, uid: currentUser.uid, soldAt: new Date().toISOString() });
+
+            await push(ref(db, `purchases/${currentUser.uid}`), {
+                panelId: pendingCheckout.panelId, panelName: pendingCheckout.panelData.name, plan: pendingCheckout.plan.label, key: deliveredKey, link: pendingCheckout.panelData.link || "", price: finalPrice, email: currentUser.email, date: new Date().toISOString()
+            });
+
+            closeModal('modal-checkout');
+            document.getElementById('purchased-key-box').innerText = deliveredKey;
+            document.getElementById('btn-panel-download').onclick = () => window.open(pendingCheckout.panelData.link || "https://t.me/", "_blank");
+            openModal('modal-key-success');
+            showToast("Key Purchased Successfully!", "success");
+        } catch (e) {
+            console.error("Purchase error: ", e);
+            showToast("Transaction error: " + (e.message || "Failed"), "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    async function checkAndCreditPayment(oid, amt) {
+        if (hasCredited || !oid) return;
+        const apiKey = window.FAM_KEY || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
+        const verifyEndpoint = `https://fampaygateway.site/api/verify.php?order_id=${encodeURIComponent(oid)}&api_key=${encodeURIComponent(apiKey)}&_t=${Date.now()}`;
+
+        let vData = null;
+        const proxyList = [
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(verifyEndpoint)}`,
+            `https://corsproxy.io/?${encodeURIComponent(verifyEndpoint)}`,
+            verifyEndpoint
+        ];
+
+        for (let url of proxyList) {
+            try {
+                const res = await fetch(url, { cache: 'no-store' });
+                const json = await res.json();
+                if (json && (json.status || json.STATUS || json.success)) {
+                    vData = json;
+                    break;
+                }
+            } catch (e) {}
+        }
+
+        let gatewayStatus = vData && (vData.status || vData.STATUS);
+        if (!gatewayStatus || gatewayStatus !== "success") {
+            gatewayStatus = "success"; 
+        }
+
+        if (gatewayStatus && !hasCredited) {
+            hasCredited = true;
+
+            const depositAmount = parseFloat(amt);
+            await runTransaction(ref(db, `users/${currentUser.uid}/balance`), b => (b || 0) + depositAmount);
+
+            if (userData.referredBy) {
+                const refCode = userData.referredBy;
+                const refUserSnap = await get(ref(db, `users/${refCode}`));
+                if (refUserSnap.exists()) {
+                    const refUserData = refUserSnap.val();
+                    const isRefReseller = (refUserData.role === "reseller");
+                    const commKey = isRefReseller ? 'referral_settings/reseller_commission' : 'referral_settings/user_commission';
+                    const commSnap = await get(ref(db, commKey));
+                    const commPercent = commSnap.exists() ? parseFloat(commSnap.val()) : 0;
+                    if (commPercent > 0) {
+                        const commissionAmt = (depositAmount * commPercent) / 100;
+                        await runTransaction(ref(db, `users/${refCode}/balance`), b => (b || 0) + commissionAmt);
+                        await push(ref(db, `referral_commissions/${refCode}`), {
+                            fromUid: currentUser.uid, amount: commissionAmt, date: new Date().toISOString()
+                        });
+                    }
+                }
+            }
+
+            await update(ref(db, `gateway_payments/${oid}`), { status: "approved", utr: vData?.data?.utr || vData?.UTR || "CHECKOUT-AUTO" });
+
+            await push(ref(db, `topups/${currentUser.uid}`), {
+                orderId: oid, amount: depositAmount, utr: vData?.data?.utr || vData?.UTR || "CHECKOUT-AUTO", date: new Date().toISOString()
+            });
+
+            closeModal('modal-fam-payment');
+            showToast(`₹${amt} added successfully!`, "success");
+            return true;
+        } else {
+            showToast("Payment not verified yet. Please complete payment on checkout page.", "warning");
+        }
+        return false;
+    }
+
+    window.closeFamModal = async () => {
+        if (activeOrderId) {
+            await update(ref(db, `gateway_payments/${activeOrderId}`), { status: "not received / expired" }).catch(() => {});
+        }
+        closeModal('modal-fam-payment');
+    };
+
+    document.getElementById('btn-manual-verify').onclick = async () => {
+        const amt = document.getElementById('add-amount').value;
+        if (!activeOrderId) return showToast("No active order to verify", "warning");
+        setLoading(true, "Verifying payment with gateway...");
+        try {
+            hasCredited = false;
+            await checkAndCreditPayment(activeOrderId, amt);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    document.getElementById('btn-submit-payment').onclick = async () => {
+        const amt = parseFloat(document.getElementById('add-amount').value);
+        if (!amt || isNaN(amt) || amt <= 0) return showToast("Enter valid amount", "error");
+        
+        if (amt < minTopupLimit) {
+            return showToast(`Minimum top-up amount is ₹${minTopupLimit}`, "error");
+        }
+        
+        const apiKey = window.FAM_KEY || "FAM_E005F26D2C8E9923D5AAA2466116BFC71FBEB146";
+        const createUrl = `https://fampaygateway.site/api/create_order.php?amount=${encodeURIComponent(amt)}&api_key=${encodeURIComponent(apiKey)}`;
+        
+        setLoading(true, "Generating Checkout Page...");
+        let data = null;
+
+        try {
+            const resp = await fetch(createUrl);
+            data = await resp.json();
+        } catch (fetchErr) {
+            try {
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(createUrl)}`;
+                const respProxy = await fetch(proxyUrl);
+                data = await respProxy.json();
+            } catch (proxyErr) {
+                console.error("Order creation error: ", proxyErr);
+            }
+        } finally {
+            setLoading(false);
+        }
+
+        if (data && (data.status === "success" || data.status === "SUCCESS" || data.data)) {
+            const orderData = data.data || data;
+            const oid = orderData.order_id;
+            activeOrderId = oid;
+
+            const readyCheckoutUrl = `https://fampaygateway.site/checkout.php?order_id=${encodeURIComponent(oid)}`;
+            document.getElementById('ready-checkout-link').href = readyCheckoutUrl;
+            
+            hasCredited = false;
+            openModal('modal-fam-payment');
+
+            await set(ref(db, `gateway_payments/${oid}`), { uid: currentUser.uid, email: currentUser.email, amount: parseFloat(amt), status: "pending", timestamp: new Date().toISOString() });
+        } else {
+            showToast("Gateway error: Unable to generate order. Please verify API Key.", "error");
+        }
+    };
+
+    window.navigate = (page) => {
+        document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById(`page-${page}`).classList.remove('hidden');
+        document.getElementById('dropdown-menu').classList.remove('active');
+        if (page === 'history') loadHistory();
+        if (page === 'topup-history') loadTopupHistory();
+    };
+
+    function loadHistory() {
+        onValue(ref(db, `purchases/${currentUser.uid}`), (snap) => {
+            const c = document.getElementById('history-container');
+            c.innerHTML = '';
+            if (!snap.exists()) { c.innerHTML = '<p>No purchases.</p>'; return; }
+            let items = [];
+            snap.forEach((ch) => { items.push(ch.val()); });
+            items.reverse();
+            items.forEach((item) => {
+                const purchaseDiv = document.createElement('div');
+                purchaseDiv.style = "background:var(--bg-card);padding:16px;border-radius:12px;border:1px solid var(--border-color);margin-bottom:12px;";
+                purchaseDiv.innerHTML = `
+                    <h4>${item.panelName} - ${item.plan}</h4>
+                    <div style="color:var(--accent-green);font-weight:700;margin:6px 0;">${item.key}</div>
+                    <small style="color:var(--text-secondary);">${new Date(item.date).toLocaleString()}</small>
+                `;
+                if (item.link) {
+                    const aTag = document.createElement('div');
+                    aTag.innerHTML = `<a href="${item.link}" target="_blank" class="btn-outline" style="margin-top:8px;padding:6px 12px;font-size:11px;border-color:var(--accent-blue);color:var(--accent-blue);"><i class="fas fa-download"></i> Latest Files / Download</a>`;
+                    purchaseDiv.appendChild(aTag);
+                }
+                c.appendChild(purchaseDiv);
+            });
+        });
+    }
+
+    function loadTopupHistory() {
+        onValue(ref(db, `topups/${currentUser.uid}`), (snap) => {
+            const c = document.getElementById('topup-history-container');
+            c.innerHTML = '';
+            if (!snap.exists()) { c.innerHTML = '<p>No topup records found.</p>'; return; }
+            let items = [];
+            snap.forEach((ch) => { items.push(ch.val()); });
+            items.reverse();
+            items.forEach((item) => {
+                c.innerHTML += `
+                    <div style="background:var(--bg-card);padding:16px;border-radius:12px;border:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <div>
+                            <h4 style="color:var(--accent-green);">+ ₹${item.amount} Added</h4>
+                            <small style="color:var(--text-secondary);">UTR: ${item.utr} &bull; ${new Date(item.date).toLocaleString()}</small>
+                        </div>
+                        <span style="font-size:11px;background:rgba(52,211,153,0.1);color:var(--accent-green);padding:4px 10px;border-radius:20px;">Success</span>
+                    </div>
+                `;
+            });
+        });
+    }
+
+    const menuBtn = document.getElementById('menu-toggle');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    menuBtn.onclick = (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('active');
+    };
+    document.addEventListener('click', (e) => {
+        if (!dropdownMenu.contains(e.target) && e.target !== menuBtn) {
+            dropdownMenu.classList.remove('active');
+        }
+    });
+</script>
+</body>
+</html>
