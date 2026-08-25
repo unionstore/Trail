@@ -490,7 +490,6 @@
         <h3 style="margin-bottom:6px;"><i class="fas fa-external-link-alt" style="color:var(--accent-blue);"></i> Complete Payment</h3>
         <p style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;">Click below to open the secure ready-made checkout page:</p>
         
-        <!-- Display Order ID to user -->
         <div style="background:var(--bg-input);padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);margin-bottom:12px;font-size:11px;color:var(--text-secondary);">
             Order ID: <strong id="display-order-id" style="color:var(--accent-blue);">-</strong>
         </div>
@@ -1318,11 +1317,11 @@
         }
     };
 
-    // STRICT CHECK & ANTI-DOUBLE-CREDIT VERIFICATION
+    // FRESH, SECURE & ANTI-DOUBLE-CREDIT PAYMENT VERIFICATION
     async function checkAndCreditPayment(oid, amt) {
         if (!oid) return false;
 
-        // Check if this order has already been used/approved in database to prevent double crediting
+        // Check if already approved/credited in database
         const paymentSnap = await get(ref(db, `gateway_payments/${oid}`));
         if (paymentSnap.exists()) {
             const payInfo = paymentSnap.val();
@@ -1343,9 +1342,10 @@
             verifyEndpoint
         ];
 
+        // Fresh request from starting without any caching
         for (let url of proxyList) {
             try {
-                const res = await fetch(url, { cache: 'no-store' });
+                const res = await fetch(url, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
                 const json = await res.json();
                 if (json) {
                     vData = json;
@@ -1354,17 +1354,17 @@
             } catch (e) {}
         }
 
+        // Flexible status matching: checking for "success", "credited", "paid", "approved", "completed"
         const statusVal = vData && (vData.status || vData.STATUS || '');
-        const isSuccess = (typeof statusVal === 'string' && statusVal.toLowerCase() === 'success');
+        const isSuccess = (typeof statusVal === 'string' && ["success", "credited", "paid", "approved", "completed"].includes(statusVal.toLowerCase())) || (vData && vData.success === true);
 
         if (isSuccess) {
             const depositAmount = parseFloat(amt);
             
-            // Double-check inside transaction to ensure absolute safety against race conditions
             let creditedSuccessfully = false;
             await runTransaction(ref(db, `gateway_payments/${oid}/status`), (currentStatus) => {
                 if (currentStatus === "approved") {
-                    return; // Already approved, abort transaction
+                    return; 
                 }
                 creditedSuccessfully = true;
                 return "approved";
@@ -1376,7 +1376,6 @@
                 return false;
             }
 
-            // Credit balance to user
             await runTransaction(ref(db, `users/${currentUser.uid}/balance`), b => (b || 0) + depositAmount);
 
             if (userData.referredBy) {
