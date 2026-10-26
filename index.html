@@ -1881,6 +1881,23 @@ function setUserRole(uid, targetRole) {
   update(ref(db, 'users/' + uid), { role: targetRole }).then(() => toast(`User set to ${targetRole.toUpperCase()}`)).catch(err => toast(err.message));
 }
 
+// Standalone Seller Membership Plans (not tied to products or stock keys)
+let sellerMembershipPlans = {};
+const sellerMembershipFormEl = $('sellerMembershipForm');
+function renderSellerMembershipPlans(){
+  const host = $('sellerMembershipList'); if (!host) return;
+  const entries = Object.entries(sellerMembershipPlans || {});
+  if (!entries.length) { host.innerHTML = '<div class="empty">No seller membership plans yet. Create one above.</div>'; return; }
+  host.innerHTML = entries.map(([id,p]) => `<div class="panel" style="padding:12px;margin:0;box-shadow:none"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="min-width:0;flex:1"><b>${window.esc(p.name||'Seller Membership')}</b><div style="color:var(--cyan);font-weight:800;margin-top:4px">₹${Number(p.price||0).toFixed(2)} · ${window.esc(p.duration||'')}</div><div class="sub" style="margin-top:4px">${window.esc(p.description||'')}</div><div style="font-size:11px;margin-top:5px;color:${p.active===false?'var(--red)':'var(--green)'}">${p.active===false?'Disabled':'Available'}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" type="button" onclick="editSellerMembership('${id}')">Edit</button><button class="btn secondary" type="button" onclick="toggleSellerMembership('${id}')">${p.active===false?'Enable':'Disable'}</button><button class="btn danger" type="button" onclick="deleteSellerMembership('${id}')">Delete</button></div></div></div>`).join('');
+}
+function clearSellerMembershipForm(){ if(!$('sellerMembershipForm')) return; $('sellerMembershipForm').reset(); $('sellerMembershipId').value=''; $('sellerMembershipActive').checked=true; }
+window.editSellerMembership = id => { const p=sellerMembershipPlans[id]; if(!p)return; $('sellerMembershipId').value=id; $('sellerMembershipName').value=p.name||''; $('sellerMembershipPrice').value=Number(p.price||0); $('sellerMembershipDuration').value=p.duration||''; $('sellerMembershipDescription').value=p.description||''; $('sellerMembershipActive').checked=p.active!==false; navigateTo('view-seller-memberships'); window.scrollTo({top:0,behavior:'smooth'}); };
+window.toggleSellerMembership = async id => { const p=sellerMembershipPlans[id]; if(!p)return; try{await update(ref(db,'sellerMembershipPlans/'+id),{active:p.active===false,updatedAt:Date.now()});}catch(e){toast(e.message);} };
+window.deleteSellerMembership = async id => { if(!confirm('Delete this seller membership plan?'))return; try{await remove(ref(db,'sellerMembershipPlans/'+id)); if($('sellerMembershipId').value===id)clearSellerMembershipForm(); toast('Membership plan deleted');}catch(e){toast(e.message);} };
+if (sellerMembershipFormEl) sellerMembershipFormEl.addEventListener('submit', async e=>{e.preventDefault(); const id=$('sellerMembershipId').value||push(ref(db,'sellerMembershipPlans')).key; const plan={name:$('sellerMembershipName').value.trim(),price:Number($('sellerMembershipPrice').value),duration:$('sellerMembershipDuration').value.trim(),description:$('sellerMembershipDescription').value.trim(),active:$('sellerMembershipActive').checked,updatedAt:Date.now()}; if(!plan.name||!Number.isFinite(plan.price)||plan.price<=0||!plan.duration)return toast('Enter a valid name, price and validity'); try{await set(ref(db,'sellerMembershipPlans/'+id),plan);clearSellerMembershipForm();toast('Seller membership plan saved');}catch(err){toast(err.message);} });
+if ($('clearSellerMembershipBtn')) $('clearSellerMembershipBtn').onclick=clearSellerMembershipForm;
+onValue(ref(db,'sellerMembershipPlans'),snap=>{sellerMembershipPlans=snap.val()||{};renderSellerMembershipPlans();});
+
 clearForm();
 </script>
 <script>
@@ -1964,22 +1981,7 @@ clearForm();
 })();
 
 
-// Standalone Seller Membership Plans (not tied to products or stock keys)
-let sellerMembershipPlans = {};
-const sellerMembershipFormEl = $('sellerMembershipForm');
-function renderSellerMembershipPlans(){
-  const host = $('sellerMembershipList'); if (!host) return;
-  const entries = Object.entries(sellerMembershipPlans || {});
-  if (!entries.length) { host.innerHTML = '<div class="empty">No seller membership plans yet. Create one above.</div>'; return; }
-  host.innerHTML = entries.map(([id,p]) => `<div class="panel" style="padding:12px;margin:0;box-shadow:none"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="min-width:0;flex:1"><b>${window.esc(p.name||'Seller Membership')}</b><div style="color:var(--cyan);font-weight:800;margin-top:4px">₹${Number(p.price||0).toFixed(2)} · ${window.esc(p.duration||'')}</div><div class="sub" style="margin-top:4px">${window.esc(p.description||'')}</div><div style="font-size:11px;margin-top:5px;color:${p.active===false?'var(--red)':'var(--green)'}">${p.active===false?'Disabled':'Available'}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" type="button" onclick="editSellerMembership('${id}')">Edit</button><button class="btn secondary" type="button" onclick="toggleSellerMembership('${id}')">${p.active===false?'Enable':'Disable'}</button><button class="btn danger" type="button" onclick="deleteSellerMembership('${id}')">Delete</button></div></div></div>`).join('');
-}
-function clearSellerMembershipForm(){ if(!$('sellerMembershipForm')) return; $('sellerMembershipForm').reset(); $('sellerMembershipId').value=''; $('sellerMembershipActive').checked=true; }
-window.editSellerMembership = id => { const p=sellerMembershipPlans[id]; if(!p)return; $('sellerMembershipId').value=id; $('sellerMembershipName').value=p.name||''; $('sellerMembershipPrice').value=Number(p.price||0); $('sellerMembershipDuration').value=p.duration||''; $('sellerMembershipDescription').value=p.description||''; $('sellerMembershipActive').checked=p.active!==false; navigateTo('view-seller-memberships'); window.scrollTo({top:0,behavior:'smooth'}); };
-window.toggleSellerMembership = async id => { const p=sellerMembershipPlans[id]; if(!p)return; try{await update(ref(db,'sellerMembershipPlans/'+id),{active:p.active===false,updatedAt:Date.now()});}catch(e){toast(e.message);} };
-window.deleteSellerMembership = async id => { if(!confirm('Delete this seller membership plan?'))return; try{await remove(ref(db,'sellerMembershipPlans/'+id)); if($('sellerMembershipId').value===id)clearSellerMembershipForm(); toast('Membership plan deleted');}catch(e){toast(e.message);} };
-if (sellerMembershipFormEl) sellerMembershipFormEl.addEventListener('submit', async e=>{e.preventDefault(); const id=$('sellerMembershipId').value||push(ref(db,'sellerMembershipPlans')).key; const plan={name:$('sellerMembershipName').value.trim(),price:Number($('sellerMembershipPrice').value),duration:$('sellerMembershipDuration').value.trim(),description:$('sellerMembershipDescription').value.trim(),active:$('sellerMembershipActive').checked,updatedAt:Date.now()}; if(!plan.name||!Number.isFinite(plan.price)||plan.price<=0||!plan.duration)return toast('Enter a valid name, price and validity'); try{await set(ref(db,'sellerMembershipPlans/'+id),plan);clearSellerMembershipForm();toast('Seller membership plan saved');}catch(err){toast(err.message);} });
-if ($('clearSellerMembershipBtn')) $('clearSellerMembershipBtn').onclick=clearSellerMembershipForm;
-onValue(ref(db,'sellerMembershipPlans'),snap=>{sellerMembershipPlans=snap.val()||{};renderSellerMembershipPlans();});
+
 </script>
 
 </body>
