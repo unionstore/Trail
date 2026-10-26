@@ -179,8 +179,8 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transform:none!important}}
 
 
-/* Remove stray injected theme palette / ghost capsule artifacts. */
-#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"],[id*="theme-palette"],[class*="theme-palette"]{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;max-width:0!important;max-height:0!important;}
+/* Fix: remove stray theme-palette/ghost pill that was rendering as a floating capsule. */
+#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"]{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;}
 </style>
 </head>
 <body>
@@ -223,7 +223,7 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
       <span>📦</span><span>Panels & Plans</span>
     </button>
     <button class="drawer-item" data-page="view-inventory">
-      <span>🔎</span><span>Stock View</span>
+      <span>🔑</span><span>Stock Keys Vault</span>
     </button>
     <button class="drawer-item" data-page="view-orders">
       <span>🧾</span><span>Customer Orders</span>
@@ -380,7 +380,7 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
           </div>
           
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-            <span style="font-size:11px;font-weight:700;color:var(--cyan)">PLANS (Plan Name | User ₹ | Reseller ₹ | Seller ₹)</span>
+            <span style="font-size:11px;font-weight:700;color:var(--cyan)">PLANS (Plan Name | User ₹ | Reseller ₹)</span>
             <button type="button" class="btn secondary" id="addPlanBtn" style="padding:4px 8px;font-size:10.5px">+ Add Plan</button>
           </div>
           
@@ -402,14 +402,13 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
     <section class="view-pane" id="view-inventory">
       <div class="view-header">
         <div>
-          <h2>Stock View</h2>
-          <p>Select a product and plan to inspect, add, edit or delete available stock keys.</p>
+          <h2>Stock Keys Vault</h2>
+          <p>Real-time keys available in stock per plan.</p>
         </div>
         <button class="header-back-btn" onclick="window.goBack()">← Back</button>
       </div>
 
       <div class="panel">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><select id="stockViewProduct" class="field"><option value="all">All products</option></select><select id="stockViewPlan" class="field"><option value="all">All plans</option></select></div>
         <div id="stockVaultTable" class="table-wrap"><div style="padding:15px;text-align:center">Loading stock registry...</div></div>
       </div>
     </section>
@@ -1356,7 +1355,7 @@ function wizardSelectProduct(productId) {
       <button class="btn secondary" style="justify-content:space-between;padding:12px;font-size:14px" onclick="window.wizardSelectPlan(${idx})">
         <div>
           <b>${window.esc(pl.name)}</b>
-          <small style="color:var(--muted);display:block">₹${pl.price} (Reseller: ₹${pl.resellerPrice||pl.price} · Seller: ₹${pl.sellerPrice||pl.resellerPrice||pl.price})</small>
+          <small style="color:var(--muted);display:block">₹${pl.price} (Reseller: ₹${pl.resellerPrice||pl.price})</small>
         </div>
         <span class="pill ${(pl.keysPool||[]).length > 0 ? 'delivered' : 'pending'}">${(pl.keysPool||[]).length} In Stock ➔</span>
       </button>
@@ -1437,14 +1436,13 @@ if (wizardSubmitKeysBtnEl) wizardSubmitKeysBtnEl.onclick = async () => {
   } catch (e) { toast(e.message); }
 };
 
-function createPlanRow(name='', price='', resellerPrice='', sellerPrice=''){
+function createPlanRow(name='', price='', resellerPrice=''){
   const div = document.createElement('div');
   div.className = 'plan-item-row';
   div.innerHTML = `
     <input class="field plan-name-input" placeholder="Plan (e.g. 1 Day)" value="${window.esc(name)}" required>
     <input class="field plan-price-input" type="number" placeholder="User ₹" value="${window.esc(price)}" required>
     <input class="field plan-reseller-input" type="number" placeholder="Reseller ₹" value="${window.esc(resellerPrice)}" required>
-    <input class="field plan-seller-input" type="number" placeholder="Seller ₹" value="${window.esc(sellerPrice)}" min="0">
     <button type="button" class="btn-del-plan" title="Delete">✕</button>
   `;
   div.querySelector('.btn-del-plan').onclick = () => {
@@ -1514,7 +1512,6 @@ if (productFormEl) productFormEl.onsubmit = async e => {
     const pName = row.querySelector('.plan-name-input').value.trim();
     const pPrice = Number(row.querySelector('.plan-price-input').value);
     const pReseller = Number(row.querySelector('.plan-reseller-input').value);
-    const pSeller = Number(row.querySelector('.plan-seller-input')?.value || 0);
     const prevKeys = existingPlans[i]?.keysPool || [];
     
     if(pName) {
@@ -1522,7 +1519,6 @@ if (productFormEl) productFormEl.onsubmit = async e => {
         name: pName,
         price: pPrice,
         resellerPrice: pReseller,
-        sellerPrice: pSeller,
         stock: prevKeys.length,
         keysPool: prevKeys
       });
@@ -1562,7 +1558,7 @@ function editProduct(id) {
   if ($('plansContainer')) {
     $('plansContainer').innerHTML = '';
     (p.plans || []).forEach(pl => {
-      $('plansContainer').appendChild(createPlanRow(pl.name, pl.price, pl.resellerPrice, pl.sellerPrice));
+      $('plansContainer').appendChild(createPlanRow(pl.name, pl.price, pl.resellerPrice));
     });
   }
   if ($('productFormTitle')) $('productFormTitle').textContent = `Edit Panel: ${p.name}`;
@@ -1660,11 +1656,9 @@ function renderProducts(){
                 <small style="color:var(--muted)">Media: ${window.esc(p.mediaType || 'none')}</small>
               </td>
               <td>${(p.plans||[]).map(pl=>`<span class="pill-plan">${window.esc(pl.name)}: ₹${pl.price} (Stock: <b>${(pl.keysPool||[]).length}</b>)</span>`).join('')}</td>
-              <td style="min-width:88px">
-                <div style="display:flex;flex-direction:column;gap:8px;align-items:stretch">
-                <button class="btn secondary" style="padding:7px 10px;font-size:11px" onclick="window.editProduct('${window.esc(id)}')">Edit</button>
-                <button class="btn danger" style="padding:7px 10px;font-size:11px" onclick="window.deleteProduct('${window.esc(id)}')">Delete</button>
-                </div>
+              <td>
+                <button class="btn secondary" style="padding:4px 6px;font-size:10px" onclick="window.editProduct('${window.esc(id)}')">Edit</button>
+                <button class="btn danger" style="padding:4px 6px;font-size:10px" onclick="window.deleteProduct('${window.esc(id)}')">Del</button>
               </td>
             </tr>
           `).join('')}
@@ -1675,11 +1669,6 @@ function renderProducts(){
 }
 
 function renderStockVault(){
-  const productSelect=$('stockViewProduct'), planSelect=$('stockViewPlan');
-  if(productSelect){const current=productSelect.value||'all';productSelect.innerHTML='<option value="all">All products</option>'+Object.entries(products).map(([id,p])=>`<option value="${window.esc(id)}">${window.esc(p.name||'Product')}</option>`).join('');if([...productSelect.options].some(o=>o.value===current))productSelect.value=current;}
-  const selectedProduct=productSelect?.value||'all';
-  if(planSelect){const current=planSelect.value||'all';let opts='<option value="all">All plans</option>';Object.entries(products).filter(([id])=>selectedProduct==='all'||id===selectedProduct).forEach(([id,p])=>(p.plans||[]).forEach((pl,i)=>opts+=`<option value="${window.esc(id)}::${i}">${window.esc(p.name)} — ${window.esc(pl.name)}</option>`));planSelect.innerHTML=opts;if([...planSelect.options].some(o=>o.value===current))planSelect.value=current;}
-  const selectedPlan=planSelect?.value||'all';
   const rows = Object.entries(products);
   const container = $('stockVaultTable');
   if(!container) return;
@@ -1689,7 +1678,7 @@ function renderStockVault(){
     <table class="table">
       <thead><tr><th>Product & Plan</th><th>Available Keys</th><th>Manage Stock</th></tr></thead>
       <tbody>
-        ${rows.filter(([id])=>selectedProduct==='all'||id===selectedProduct).map(([id, p]) => (p.plans || []).map((pl, idx) => ({pl,idx,id,p})).filter(x=>selectedPlan==='all'||selectedPlan===`${x.id}::${x.idx}`).map(({pl,idx,id,p}) => `
+        ${rows.map(([id, p]) => (p.plans || []).map((pl, idx) => `
           <tr>
             <td>
               <b>${window.esc(p.name)}</b><br>
@@ -1711,8 +1700,6 @@ function renderStockVault(){
     </table>
   `;
 }
-
-document.addEventListener('change',e=>{if(e.target && ['stockViewProduct','stockViewPlan'].includes(e.target.id))renderStockVault();});
 
 function renderOrders(){
   const rows = Object.entries(orders).sort((a,b)=>(b[1]?.createdAt||0)-(a[1]?.createdAt||0));
@@ -1819,5 +1806,69 @@ clearForm();
 })();
 
 </script>
+<script>
+/* TG CHEATS runtime guard: remove accidentally rendered JavaScript snippets, never app UI. */
+(function(){
+  const marker = 'Optional local-only click sound';
+  const codeHints = ['initClickSounds()', "document.addEventListener('click',e=>", 'const key=\'tgCheatsClickSounds\''];
+  function isLeakedCode(text){
+    if(!text) return false;
+    return text.includes(marker) || (text.includes('tgCheatsClickSounds') && text.includes('AudioContext') && text.includes('playTap')) || (text.includes('initClickSounds') && text.includes('localStorage'));
+  }
+  function clean(root){
+    if(!root) return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const bad=[]; let n;
+    while((n=walker.nextNode())){
+      const parent=n.parentElement;
+      if(!parent || parent.closest('script,style,textarea,pre,code')) continue;
+      if(isLeakedCode(n.nodeValue)) bad.push(n);
+    }
+    bad.forEach(n=>{
+      const p=n.parentElement;
+      if(p && p!==document.body && p.children.length===0) p.remove();
+      else n.remove();
+    });
+  }
+  function boot(){
+    clean(document.body);
+    if(window.MutationObserver && document.body){
+      new MutationObserver(records=>records.forEach(r=>{
+        r.addedNodes.forEach(node=>{if(node.nodeType===Node.TEXT_NODE){if(isLeakedCode(node.nodeValue) && node.parentElement && !node.parentElement.closest('script,style,textarea,pre,code')) node.remove();} else if(node.nodeType===Node.ELEMENT_NODE && !['SCRIPT','STYLE','TEXTAREA','PRE','CODE'].includes(node.tagName)) clean(node);});
+      })).observe(document.body,{childList:true,subtree:true});
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
+})();
+</script>
+<script>
+/* Click sound is local-only, opt-in, and safe when the toggle is not present. */
+(function initClickSounds(){
+  const key='tgCheatsClickSounds';
+  let enabled=false;
+  try{enabled=localStorage.getItem(key)==='on'}catch(_){}
+  function playTap(){
+    try{
+      const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+      const c=new C(),o=c.createOscillator(),g=c.createGain();
+      o.type='sine';o.frequency.value=740;
+      g.gain.setValueAtTime(.025,c.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.04);
+      o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.045);o.onended=()=>c.close();
+    }catch(_){}
+  }
+  function bindToggle(){
+    const toggle=document.getElementById('clickSoundToggle');
+    const label=document.getElementById('clickSoundLabel');
+    const sync=()=>{if(toggle)toggle.checked=enabled;if(label)label.textContent=enabled?'On':'Off'};
+    sync();
+    if(toggle && !toggle.dataset.soundBound){toggle.dataset.soundBound='1';toggle.addEventListener('change',()=>{enabled=toggle.checked;try{localStorage.setItem(key,enabled?'on':'off')}catch(_){}sync();if(enabled)playTap()})}
+  }
+  document.addEventListener('click',e=>{if(enabled && e.target.closest('button,.btn,.bottom-item,.drawer-item,a,[role="button"]'))playTap()});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindToggle,{once:true});else bindToggle();
+  new MutationObserver(bindToggle).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body>
 </html>
