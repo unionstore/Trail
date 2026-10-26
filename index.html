@@ -179,8 +179,8 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transform:none!important}}
 
 
-/* Fix: remove stray theme-palette/ghost pill that was rendering as a floating capsule. */
-#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"]{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;}
+/* Remove stray floating theme-palette capsule, including dynamically injected copies. */
+#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"],#theme-palette,.theme-palette-ghost{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;min-width:0!important;min-height:0!important;opacity:0!important;}
 </style>
 </head>
 <body>
@@ -1870,5 +1870,12 @@ clearForm();
 })();
 </script>
 
+<script>
+(function removeGhostCapsule(){
+  const remove = () => document.querySelectorAll('#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"],#theme-palette,.theme-palette-ghost').forEach(el => el.remove());
+  remove();
+  if (document.body && window.MutationObserver) new MutationObserver(remove).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>
