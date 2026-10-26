@@ -29,7 +29,7 @@ html, body, * {
   height: 0 !important;
 }
 
-body{margin:0;background:radial-gradient(ellipse at 80% -20%,#182a4d 0,transparent 45%),var(--bg);color:var(--text);font:14px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer;border:0}
 .wrap{max-width:760px;margin:auto;padding:0 14px}
@@ -40,7 +40,7 @@ button{cursor:pointer;border:0}
 .nav-btn{width:40px;height:40px;border-radius:10px;background:#101726;border:1px solid #28374f;color:#eaf2ff;font-size:20px;display:grid;place-items:center;transition:transform .2s}
 .nav-btn:active{transform:scale(.92)}
 .brand{display:flex;align-items:center;gap:8px;font-weight:900}
-.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#5b8cff,#9a5cff);display:grid;place-items:center;font-size:14px;font-weight:800;box-shadow:0 0 15px rgba(91,140,255,.4)}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#5b8cff,#9a5cff);display:grid;place-items:center;font-size:14px;font-weight:800;box-shadow:none}
 
 .btn{
   padding:9px 14px; border-radius:10px; font-weight:750;
@@ -48,7 +48,7 @@ button{cursor:pointer;border:0}
   display:inline-flex; align-items:center; justify-content:center;
 }
 .btn:active{transform:scale(0.95); filter:brightness(0.9);}
-.primary{background:linear-gradient(135deg,#5b8cff,#7665ff);color:white;box-shadow:0 4px 15px rgba(91,140,255,0.3)}
+.primary{background:linear-gradient(135deg,#5b8cff,#7665ff);color:white;box-shadow:none}
 .primary:hover{filter:brightness(1.05); box-shadow:0 6px 20px rgba(91,140,255,0.45)}
 .secondary{background:#162033;color:#e9efff;border:1px solid #27374e}
 .secondary:hover{background:#1f2d45; border-color:#384f73}
@@ -100,7 +100,7 @@ button{cursor:pointer;border:0}
 .pill.pending{background:#3d2f16;color:#fcd34d}
 
 .plans-builder-box{background:#080c16;border:1px solid #1f2c42;border-radius:12px;padding:10px}
-.plan-item-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 30px;gap:6px;align-items:center;margin-bottom:8px}
+.plan-item-row{display:grid;grid-template-columns:minmax(100px,1.4fr) minmax(75px,1fr) minmax(85px,1fr) minmax(75px,1fr) 30px;gap:6px;align-items:center;margin-bottom:8px;min-width:540px}.plans-builder-box{overflow-x:auto}
 .plan-item-row input{padding:8px;font-size:12px}
 .btn-del-plan{width:30px;height:32px;background:#381c26;border:1px solid #6b2d3d;color:#ffb4c0;border-radius:6px;display:grid;place-items:center}
 .pill-plan{display:inline-block;padding:2px 6px;background:#142236;border:1px solid #233959;border-radius:6px;font-size:10.5px;margin:2px}
@@ -121,11 +121,7 @@ button{cursor:pointer;border:0}
   box-shadow:0 30px 70px rgba(0,0,0,0.85), 0 0 50px rgba(99, 230, 219, 0.15);
   animation:popIn .4s cubic-bezier(0.16,1,0.3,1) forwards; position:relative; overflow:hidden;
 }
-.auth-card::before{
-  content:''; position:absolute; top:0; left:0; right:0; height:3px;
-  background:linear-gradient(90deg, transparent, var(--cyan), var(--blue), transparent);
-  animation:shimmerBar 3s infinite linear;
-}
+.auth-card::before{content:none!important;display:none!important}
 @keyframes shimmerBar{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
 .toast{position:fixed;bottom:72px;left:50%;transform:translate(-50%,15px);opacity:0;transition:all .25s cubic-bezier(.16,1,.3,1);background:#e8efff;color:#101827;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px;z-index:80;max-width:90vw;text-align:center}
@@ -161,9 +157,9 @@ button,.btn,a,[role="button"],input,select,textarea{transition:transform var(--m
 button:hover,.btn:hover,[role="button"]:hover{filter:brightness(1.08)}
 button:active,.btn:active,[role="button"]:active{transform:scale(.97)}
 a:hover{filter:brightness(1.1)}
-input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(56,189,248,.15),0 0 22px rgba(56,189,248,.08)!important}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(99,230,219,.55);outline-offset:1px;box-shadow:none!important}
 .card,.panel,.product-card,.stat-card,.stat-box,.order-card,.product-item,.plan-card,.support-card,.promo-card,.feature-card,.glass-card,.section-card,.inventory-card,.user-card,.deposit-card,.table-wrap{transition:transform .28s var(--motion-ease),border-color .28s ease,box-shadow .28s ease;will-change:transform}
-.card:hover,.panel:hover,.product-card:hover,.stat-card:hover,.stat-box:hover,.order-card:hover,.product-item:hover,.plan-card:hover,.support-card:hover,.promo-card:hover,.feature-card:hover,.glass-card:hover,.section-card:hover,.inventory-card:hover,.user-card:hover,.deposit-card:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.32);box-shadow:0 12px 32px rgba(0,0,0,.16)}
+.card:hover,.panel:hover,.product-card:hover,.stat-card:hover,.stat-box:hover,.order-card:hover,.product-item:hover,.plan-card:hover,.support-card:hover,.promo-card:hover,.feature-card:hover,.glass-card:hover,.section-card:hover,.inventory-card:hover,.user-card:hover,.deposit-card:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.32);box-shadow:none}
 .drawer,.sidebar,.side-panel{transition:transform .32s var(--motion-ease),opacity .25s ease}
 .modal-back{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .modal{transform-origin:center;will-change:transform,opacity}
@@ -179,8 +175,24 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transform:none!important}}
 
 
-/* Remove stray floating theme-palette capsule, including dynamically injected copies. */
-#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"],#theme-palette,.theme-palette-ghost{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;min-width:0!important;min-height:0!important;opacity:0!important;}
+/* Fix: remove stray theme-palette/ghost pill that was rendering as a floating capsule. */
+#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"]{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;}
+.panel-action-row{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:7px;white-space:nowrap}.table td:last-child{min-width:120px}@media(max-width:520px){.panel-action-row .btn{min-width:52px}}
+
+/* Animated sign-out confirmation */
+.logout-confirm-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(2,5,12,.76);backdrop-filter:blur(9px);opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease}
+.logout-confirm-overlay.open{opacity:1;visibility:visible}
+.logout-confirm-card{width:min(100%,360px);background:#0d1320;border:1px solid #2b3b56;border-radius:22px;padding:24px 20px 20px;text-align:center;box-shadow:0 22px 70px rgba(0,0,0,.55);transform:translateY(18px) scale(.94);transition:transform .28s cubic-bezier(.16,1,.3,1)}
+.logout-confirm-overlay.open .logout-confirm-card{transform:translateY(0) scale(1)}
+.logout-confirm-icon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;margin:0 auto 14px;background:#1a2940;border:1px solid #344b6b;font-size:27px}
+.logout-confirm-card h3{margin:0 0 8px;font-size:20px;color:#f4f7ff}
+.logout-confirm-card p{margin:0 0 20px;color:#9cabc0;font-size:13px;line-height:1.55}
+.logout-confirm-actions{display:flex;gap:10px}
+.logout-confirm-actions button{flex:1;min-height:44px;border-radius:12px;font-weight:800;padding:10px 12px}
+.logout-cancel{background:#172236;color:#e9efff;border:1px solid #2b3c56}
+.logout-yes{background:#e34b65;color:#fff;border:1px solid #f06b80}
+@media(prefers-reduced-motion:reduce){.logout-confirm-overlay,.logout-confirm-card{transition:none}}
+
 </style>
 </head>
 <body>
@@ -221,6 +233,9 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
     </button>
     <button class="drawer-item" data-page="view-panels">
       <span>📦</span><span>Panels & Plans</span>
+    </button>
+    <button class="drawer-item" data-page="view-seller-memberships">
+      <span>🏆</span><span>Seller Membership Plans</span>
     </button>
     <button class="drawer-item" data-page="view-inventory">
       <span>🔑</span><span>Stock Keys Vault</span>
@@ -263,7 +278,6 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
 
 <main class="wrap">
   <section id="loginPanel" class="auth-card">
-    <div id="adminLoginLogoWrap" style="display:flex;justify-content:center;margin:0 0 18px"><div id="adminLoginLogo" style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#5b8cff,#7665ff);display:grid;place-items:center;color:#fff;font-weight:900;font-size:20px;box-shadow:0 8px 24px #5b8cff44">TG</div></div>
     <h3 style="margin:0 0 6px;font-size:22px;font-weight:900;color:#63e6db">Admin Center</h3>
     <p style="color:var(--muted);font-size:13px;margin:0 0 20px">Authenticate with secure admin credentials.</p>
     <div class="stack">
@@ -381,7 +395,7 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
           </div>
           
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-            <span style="font-size:11px;font-weight:700;color:var(--cyan)">PLANS (Plan Name | User ₹ | Reseller ₹)</span>
+            <span style="font-size:11px;font-weight:700;color:var(--cyan)">PLANS (Plan Name | User ₹ | Reseller ₹ | Seller ₹)</span>
             <button type="button" class="btn secondary" id="addPlanBtn" style="padding:4px 8px;font-size:10.5px">+ Add Plan</button>
           </div>
           
@@ -398,6 +412,22 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
         <h4 style="margin:0 0 10px">Existing Panels</h4>
         <div id="productTable" class="table-wrap"><div style="padding:15px;text-align:center">Loading panels...</div></div>
       </div>
+    </section>
+
+    <section class="view-pane" id="view-seller-memberships">
+      <div class="view-header"><div><h2>Seller Membership Plans</h2><p>Create standalone paid memberships here. These plans are separate from store products and panel keys.</p></div><button class="header-back-btn" onclick="window.goBack()">← Back</button></div>
+      <div class="panel" style="margin-bottom:14px">
+        <form id="sellerMembershipForm" class="stack">
+          <input id="sellerMembershipId" type="hidden">
+          <input id="sellerMembershipName" class="field" required maxlength="60" placeholder="Plan name (e.g. Seller Monthly)">
+          <input id="sellerMembershipPrice" class="field" type="number" min="1" step="1" required placeholder="Membership price ₹">
+          <input id="sellerMembershipDuration" class="field" required maxlength="40" placeholder="Validity (e.g. Lifetime, 30 Days)">
+          <textarea id="sellerMembershipDescription" class="field" rows="3" placeholder="Benefits and details (optional)"></textarea>
+          <label class="remember-row"><input id="sellerMembershipActive" type="checkbox" checked> Available for purchase</label>
+          <div style="display:flex;gap:8px"><button class="btn primary" type="submit" style="flex:1">Save Membership Plan</button><button class="btn secondary" type="button" id="clearSellerMembershipBtn">Clear</button></div>
+        </form>
+      </div>
+      <div class="panel"><h3 style="margin-top:0">Existing Seller Membership Plans</h3><div id="sellerMembershipList" class="stack"><div class="empty">Loading membership plans…</div></div></div>
     </section>
 
     <section class="view-pane" id="view-inventory">
@@ -523,6 +553,7 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
           <label style="font-size:11.5px;color:var(--muted)">FamGateway API Key (Full 43-char Secret)</label>
           <input id="settingGatewayKey" class="field" required placeholder="fam_..." style="font-family:monospace">
 
+          <label class="remember-row"><input id="settingReferralEnabled" type="checkbox" checked> Enable complete referral system (links, codes and rewards)</label>
           <label style="font-size:11.5px;color:var(--muted)">Referral Commission Percentage (%)</label>
           <input id="settingRefPercentage" class="field" type="number" required placeholder="e.g. 10" min="0" max="100">
 
@@ -623,7 +654,8 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
             <input type="file" id="annMediaFileInput" class="field" accept="image/*,video/*" style="padding:7px">
           </div>
 
-          <button class="btn primary" type="submit" style="margin-top:6px">Save & Broadcast Popup</button>
+          <div id="annSaveStatus" role="status" aria-live="polite" style="display:none;padding:10px 12px;border-radius:10px;font-size:12px;overflow-wrap:anywhere"></div>
+          <button id="savePopupAnnBtn" class="btn primary" type="submit" style="margin-top:6px">Save & Broadcast Popup</button>
         </form>
       </div>
     </section>
@@ -756,6 +788,7 @@ import {
   signOut
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 import {getDatabase,ref,onValue,push,set,update,remove} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js';
+import {getStorage, ref as storageRef, uploadBytes, getDownloadURL} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAM1cUZQtLA9YTA3bInmwQubh7AwI7ZHWE",
@@ -771,6 +804,31 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig), auth = getAuth(app);
 setPersistence(auth, browserLocalPersistence).catch(e => console.error(e));
 const db = getDatabase(app);
+const storage = getStorage(app);
+
+// Upload media to Firebase Storage instead of putting large base64 files in Realtime Database.
+async function uploadGalleryFile(file, folder='site-media') {
+  if (!file) throw new Error('Please choose an image or video from your gallery first.');
+  const isImage = /^image\//i.test(file.type);
+  const isVideo = /^video\//i.test(file.type);
+  if (!isImage && !isVideo) throw new Error('Unsupported file. Choose an image or video.');
+  const maxBytes = isVideo ? 100 * 1024 * 1024 : 15 * 1024 * 1024;
+  if (file.size > maxBytes) throw new Error(isVideo ? 'Video must be 100 MB or smaller.' : 'Image must be 15 MB or smaller.');
+  const safeName = (file.name || (isVideo ? 'video' : 'image')).replace(/[^a-zA-Z0-9._-]/g, '_').slice(-100);
+  const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2,10)}_${safeName}`;
+  const target = storageRef(storage, path);
+  try {
+    await uploadBytes(target, file, {contentType: file.type || (isVideo ? 'video/mp4' : 'image/jpeg'), cacheControl: 'public,max-age=3600'});
+    return await getDownloadURL(target);
+  } catch (err) {
+    if (err?.code === 'storage/unauthorized' || err?.code === 'storage/unauthenticated') {
+      throw new Error('Firebase Storage permission denied. Check Firebase Storage Rules: signed-in admin must be allowed to upload media.');
+    }
+    if (err?.code === 'storage/quota-exceeded') throw new Error('Firebase Storage quota exceeded.');
+    if (err?.code === 'storage/canceled') throw new Error('Upload cancelled. Please try again.');
+    throw new Error(err?.message || 'Upload failed. Check internet connection and Firebase Storage setup.');
+  }
+}
 
 const $ = id => document.getElementById(id);
 let products = {}, orders = {}, users = {}, deposits = {}, supportLinks = [], appConfig = {}, couponsData = {};
@@ -825,9 +883,13 @@ if (mediaTypeSelectEl) mediaTypeSelectEl.onchange = () => {
 
 const annMediaTypeEl = $('annMediaType');
 if (annMediaTypeEl) annMediaTypeEl.onchange = () => {
-  const isFile = $('annMediaType').value === 'file_upload';
+  const type = annMediaTypeEl.value;
+  const isFile = type === 'file_upload';
   if ($('annGalleryUploadContainer')) $('annGalleryUploadContainer').classList.toggle('hidden', !isFile);
-  if ($('annMediaUrl')) $('annMediaUrl').classList.toggle('hidden', !isFile);
+  if ($('annMediaUrl')) {
+    $('annMediaUrl').classList.toggle('hidden', type === 'none' || isFile);
+    $('annMediaUrl').placeholder = type === 'youtube' ? 'Paste YouTube video URL' : 'Paste direct image URL';
+  }
 };
 
 // Extra support platforms use recognizable official-domain app/site icons.
@@ -947,8 +1009,17 @@ if (loginBtnEl) loginBtnEl.onclick = async () => {
   finally { setAdminAuthBusy(loginBtnEl, false); }
 };
 
+function confirmAdminSignOut(){
+  return new Promise(resolve=>{
+    let overlay=document.getElementById('logoutConfirmOverlay');
+    if(!overlay){overlay=document.createElement('div');overlay.id='logoutConfirmOverlay';overlay.className='logout-confirm-overlay';overlay.innerHTML='<div class="logout-confirm-card" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle"><div class="logout-confirm-icon">↪</div><h3 id="logoutConfirmTitle">Sign out?</h3><p>Are you sure you want to sign out of the admin panel?</p><div class="logout-confirm-actions"><button type="button" class="logout-cancel" data-logout-cancel>Cancel</button><button type="button" class="logout-yes" data-logout-yes>Yes, Sign Out</button></div></div>';document.body.appendChild(overlay)}
+    let settled=false;const finish=value=>{if(settled)return;settled=true;overlay.classList.remove('open');document.removeEventListener('keydown',esc);setTimeout(()=>resolve(value),180)};
+    const esc=e=>{if(e.key==='Escape')finish(false)};
+    overlay.querySelector('[data-logout-cancel]').onclick=()=>finish(false);overlay.querySelector('[data-logout-yes]').onclick=()=>finish(true);overlay.onclick=e=>{if(e.target===overlay)finish(false)};document.addEventListener('keydown',esc);overlay.classList.add('open');
+  });
+}
 const logoutEl = $('logout');
-if (logoutEl) logoutEl.onclick = async () => { setAdminAuthBusy(logoutEl, true, 'Signing out…'); try { await signOut(auth); } catch(e) { if($('loginError')) $('loginError').textContent=e.message; } finally { setAdminAuthBusy(logoutEl, false); } };
+if (logoutEl) logoutEl.onclick = async () => { if(!await confirmAdminSignOut()) return; setAdminAuthBusy(logoutEl, true, 'Signing out…'); try { await signOut(auth); } catch(e) { if($('loginError')) $('loginError').textContent=e.message; } finally { setAdminAuthBusy(logoutEl, false); } };
 
 onAuthStateChanged(auth, u => {
   if (u) {
@@ -1008,6 +1079,7 @@ function startListeners(){
     const raw = s.val();
     supportLinks = (Array.isArray(raw) ? raw : (raw && typeof raw === 'object' ? Object.values(raw) : []))
       .filter(item => item && item.url && item.title)
+      .filter(item => !(String(item.title).trim() === 'Telegram Support' && String(item.url).trim().replace(/\/$/, '') === 'https://t.me/union_x_support'));
     renderSupportLinks();
   });
   onValue(ref(db, 'coupons'), s => { couponsData = s.val() || {}; renderAdminCoupons(); });
@@ -1017,9 +1089,8 @@ function startListeners(){
     if ($('settingStoreName')) $('settingStoreName').value = appConfig.storeName || 'TG UNION';
     if ($('settingGatewayKey')) $('settingGatewayKey').value = appConfig.gatewayKey || 'fam_3710dccd201f6497f7511ad6f49be25aaa569c57';
     if ($('settingRefPercentage')) $('settingRefPercentage').value = appConfig.referralPercentage !== undefined ? appConfig.referralPercentage : 10;
+    if ($('settingReferralEnabled')) $('settingReferralEnabled').checked = appConfig.referralEnabled !== false;
     if ($('settingStoreLogoUrl')) $('settingStoreLogoUrl').value = appConfig.storeLogoUrl || '';
-    const adminLoginLogo = $('adminLoginLogo');
-    if (adminLoginLogo) { if (appConfig.storeLogoUrl) { adminLoginLogo.textContent=''; adminLoginLogo.style.background = `center/cover no-repeat url(\"${String(appConfig.storeLogoUrl).replace(/[\"\\]/g, '')}\")`; adminLoginLogo.style.border='1px solid #28466c'; } else { adminLoginLogo.textContent='TG'; adminLoginLogo.style.background='linear-gradient(135deg,#5b8cff,#7665ff)'; } }
     if ($('autoResellerEnabled')) $('autoResellerEnabled').checked = !!appConfig.autoResellerEnabled;
     if ($('autoResellerAmount')) $('autoResellerAmount').value = appConfig.autoResellerAmount || 1000;
     if ($('promoEnabled')) $('promoEnabled').checked = !!appConfig.promoEnabled;
@@ -1081,24 +1152,16 @@ if (globalAppConfigFormEl) globalAppConfigFormEl.onsubmit = async e => {
   const referralPercentage = Number($('settingRefPercentage').value);
   let storeLogoUrl = $('settingStoreLogoUrl').value.trim();
   let promoMediaUrl = $('promoMediaUrl').value.trim();
-  const readDataUrl = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-
   try {
     const logoFile = $('settingStoreLogoFile').files?.[0];
 
     if (logoFile) {
-      if (logoFile.size > 1500000) throw new Error('Logo must be under 1.5 MB. Prefer a hosted image URL for larger files.');
-      storeLogoUrl = await readDataUrl(logoFile);
+      storeLogoUrl = await uploadGalleryFile(logoFile, 'store/logo');
     }
     const autoResellerAmount = Number($('autoResellerAmount').value || 0);
     if ($('autoResellerEnabled').checked && autoResellerAmount < 1) throw new Error('Enter a valid reseller upgrade threshold.');
     await update(ref(db, 'appConfig'), {
-      storeName, gatewayKey, referralPercentage, storeLogoUrl,
+      storeName, gatewayKey, referralPercentage, referralEnabled: $('settingReferralEnabled').checked, storeLogoUrl,
       autoResellerEnabled: $('autoResellerEnabled').checked,
       autoResellerAmount,
       updatedAt: Date.now()
@@ -1118,13 +1181,12 @@ if (promoConfigFormEl) promoConfigFormEl.onsubmit = async e => {
   try {
     const promoFile = $('promoMediaFile').files?.[0];
     if (promoFile) {
-      if (promoFile.size > 2500000) throw new Error('Promotion media must be under 2.5 MB. Prefer a hosted URL for larger files.');
-      promoMediaUrl = await new Promise((resolve,reject)=>{ const reader=new FileReader(); reader.onload=ev=>resolve(ev.target.result); reader.onerror=reject; reader.readAsDataURL(promoFile); });
+      promoMediaUrl = await uploadGalleryFile(promoFile, 'store/promotions');
     }
     if (promoLink && !/^https:\/\//i.test(promoLink)) throw new Error('Promotion redirect link must start with https://');
     await update(ref(db,'appConfig'), {
       promoEnabled:$('promoEnabled').checked, promoTitle:$('promoTitle').value.trim(), promoText:$('promoText').value.trim(),
-      promoMediaUrl, promoMediaType: promoFile ? (promoFile.type.startsWith('video/')?'video':'image') : (/^data:video\//i.test(promoMediaUrl) || /\.(mp4|webm|ogg)(\?|$)/i.test(promoMediaUrl) ? 'video' : (promoMediaUrl?'image':'none')),
+      promoMediaUrl, promoMediaType: promoFile ? (promoFile.type.startsWith('video/')?'video':'image') : (/^https?:\/\//i.test(promoMediaUrl) && /\.(mp4|webm|ogg|mov)(\?|$)/i.test(promoMediaUrl) ? 'video' : (promoMediaUrl?'image':'none')),
       promoLink, promoButtonText:$('promoButtonText').value.trim() || 'View Offer', promoUpdatedAt:Date.now()
     });
     toast('Ads & promotion saved. It should now appear at the top of the store home page.');
@@ -1139,18 +1201,10 @@ if (saveAboutBtnEl) saveAboutBtnEl.onclick = async () => {
   let bannerUrl = $('aboutBannerUrlInput').value.trim();
   const fileInput = $('aboutBannerFileInput');
 
-  if (fileInput && fileInput.files && fileInput.files[0]) {
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    bannerUrl = await new Promise((resolve, reject) => {
-      reader.onload = ev => resolve(ev.target.result);
-      reader.onerror = err => reject(err);
-      reader.readAsDataURL(file);
-    });
-  }
-
   try {
-    await update(ref(db, 'siteContent/about'), { visible, text, bannerType, bannerUrl });
+    const file = fileInput?.files?.[0];
+    if (file) bannerUrl = await uploadGalleryFile(file, 'site/about');
+    await update(ref(db, 'siteContent/about'), { visible, text, bannerType: file ? (file.type.startsWith('video/') ? 'video_file' : 'image') : bannerType, bannerUrl });
     toast('About Us and Banner updated!');
   } catch(e) { toast(e.message); }
 };
@@ -1163,48 +1217,74 @@ if (savePolicyBtnEl) savePolicyBtnEl.onclick = async () => {
   let bannerUrl = $('policyBannerUrlInput').value.trim();
   const fileInput = $('policyBannerFileInput');
 
-  if (fileInput && fileInput.files && fileInput.files[0]) {
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    bannerUrl = await new Promise((resolve, reject) => {
-      reader.onload = ev => resolve(ev.target.result);
-      reader.onerror = err => reject(err);
-      reader.readAsDataURL(file);
-    });
-  }
-
   try {
-    await update(ref(db, 'siteContent/policy'), { visible, text, bannerType, bannerUrl });
+    const file = fileInput?.files?.[0];
+    if (file) bannerUrl = await uploadGalleryFile(file, 'site/policy');
+    await update(ref(db, 'siteContent/policy'), { visible, text, bannerType: file ? (file.type.startsWith('video/') ? 'video_file' : 'image') : bannerType, bannerUrl });
     toast('Policy & Terms and Banner updated!');
   } catch(e) { toast(e.message); }
 };
 
 const popupAnnFormEl = $('popupAnnForm');
-if (popupAnnFormEl) popupAnnFormEl.onsubmit = async e => {
+if (popupAnnFormEl) popupAnnFormEl.addEventListener('submit', async e => {
   e.preventDefault();
-  const active = $('annActiveToggle').checked;
-  const title = $('annTitleInput').value.trim();
-  const content = $('annContentInput').value.trim();
-  let mediaType = $('annMediaType').value;
-  let mediaUrl = $('annMediaUrl').value.trim();
+  e.stopPropagation();
+  const saveBtn = $('savePopupAnnBtn');
+  const statusEl = $('annSaveStatus');
+  const showAnnStatus = (message, ok=false) => {
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.style.color = ok ? '#86efac' : '#fecaca';
+      statusEl.style.background = ok ? 'rgba(34,197,94,.10)' : 'rgba(239,68,68,.10)';
+      statusEl.style.border = `1px solid ${ok ? 'rgba(34,197,94,.35)' : 'rgba(239,68,68,.35)'}`;
+      statusEl.textContent = message;
+    }
+    if (typeof toast === 'function') toast(message);
+  };
+  if (saveBtn?.disabled) return;
+  const active = $('annActiveToggle')?.checked === true;
+  const title = $('annTitleInput')?.value.trim() || '';
+  const content = $('annContentInput')?.value.trim() || '';
+  let mediaType = $('annMediaType')?.value || 'none';
+  let mediaUrl = $('annMediaUrl')?.value.trim() || '';
   const fileInput = $('annMediaFileInput');
-
-  if (mediaType === 'file_upload' && fileInput && fileInput.files && fileInput.files[0]) {
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    mediaUrl = await new Promise((resolve, reject) => {
-      reader.onload = ev => resolve(ev.target.result);
-      reader.onerror = err => reject(err);
-      reader.readAsDataURL(file);
-    });
-    mediaType = file.type.startsWith('video') ? 'video_file' : 'image';
+  const file = mediaType === 'file_upload' ? fileInput?.files?.[0] : null;
+  if (!title && !content && mediaType === 'none') {
+    showAnnStatus('Add an announcement title, message, or media before saving.');
+    return;
   }
-
+  if (mediaType === 'file_upload' && !file) {
+    showAnnStatus('Choose an image or video from your gallery first.');
+    return;
+  }
+  if ((mediaType === 'image' || mediaType === 'youtube') && !mediaUrl) {
+    showAnnStatus('Paste the media URL or choose Upload from Gallery.');
+    return;
+  }
+  const oldLabel = saveBtn?.textContent || 'Save & Broadcast Popup';
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; saveBtn.style.opacity = '.7'; }
+  if (statusEl) statusEl.style.display = 'none';
   try {
-    await set(ref(db, 'popupAnnouncement'), { active, title, content, mediaType, mediaUrl });
-    toast('Popup Announcement updated successfully!');
-  } catch(err) { toast(err.message); }
-};
+    if (!auth.currentUser) throw new Error('Admin session expired. Sign in again, then save the announcement.');
+    if (auth.currentUser.uid !== configuredAdminUid) throw new Error('This account is not the configured admin. Sign in with the authorized admin account.');
+    if (file) {
+      showAnnStatus('Uploading media…');
+      mediaUrl = await uploadGalleryFile(file, 'store/announcements');
+      mediaType = file.type.startsWith('video/') ? 'video_file' : 'image';
+    }
+    const payload = { active, title, content, mediaType, mediaUrl, updatedAt: Date.now(), updatedBy: auth.currentUser.uid };
+    await set(ref(db, 'popupAnnouncement'), payload);
+    showAnnStatus(active ? 'Announcement saved and enabled on the store.' : 'Announcement saved. It is currently disabled on the store.', true);
+  } catch(err) {
+    const code = err?.code || '';
+    let message = err?.message || 'Could not save announcement.';
+    if (code === 'PERMISSION_DENIED' || code === 'database/permission-denied') message = 'Firebase Realtime Database permission denied. Update RTDB Rules to allow the authorized admin to write popupAnnouncement.';
+    else if (code === 'storage/unauthorized' || code === 'storage/unauthenticated') message = 'Firebase Storage permission denied. Check Storage Rules for the signed-in admin UID.';
+    showAnnStatus(message);
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = oldLabel; saveBtn.style.opacity = ''; }
+  }
+});
 
 const addCouponFormEl = $('addCouponForm');
 if (addCouponFormEl) addCouponFormEl.onsubmit = async e => {
@@ -1438,13 +1518,14 @@ if (wizardSubmitKeysBtnEl) wizardSubmitKeysBtnEl.onclick = async () => {
   } catch (e) { toast(e.message); }
 };
 
-function createPlanRow(name='', price='', resellerPrice=''){
+function createPlanRow(name='', price='', resellerPrice='', sellerPrice=''){
   const div = document.createElement('div');
   div.className = 'plan-item-row';
   div.innerHTML = `
     <input class="field plan-name-input" placeholder="Plan (e.g. 1 Day)" value="${window.esc(name)}" required>
     <input class="field plan-price-input" type="number" placeholder="User ₹" value="${window.esc(price)}" required>
     <input class="field plan-reseller-input" type="number" placeholder="Reseller ₹" value="${window.esc(resellerPrice)}" required>
+    <input class="field plan-seller-input" type="number" placeholder="Seller ₹" value="${window.esc(sellerPrice)}" required>
     <button type="button" class="btn-del-plan" title="Delete">✕</button>
   `;
   div.querySelector('.btn-del-plan').onclick = () => {
@@ -1495,16 +1576,11 @@ if (productFormEl) productFormEl.onsubmit = async e => {
   const fileInput = $('productMediaFileInput');
   const id = $('productId').value || push(ref(db, 'products')).key;
 
-  if (mediaType === 'file_upload' && fileInput && fileInput.files && fileInput.files[0]) {
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    mediaUrl = await new Promise((resolve, reject) => {
-      reader.onload = ev => resolve(ev.target.result);
-      reader.onerror = err => reject(err);
-      reader.readAsDataURL(file);
-    });
-    mediaType = file.type.startsWith('video') ? 'video_file' : 'image';
-  }
+  try {
+    const file = mediaType === 'file_upload' ? fileInput?.files?.[0] : null;
+    if (mediaType === 'file_upload' && !file && !mediaUrl) throw new Error('Please select an image/video from gallery or paste a media URL.');
+    if (file) { mediaUrl = await uploadGalleryFile(file, 'products/media'); mediaType = file.type.startsWith('video/') ? 'video_file' : 'image'; }
+  } catch (err) { return toast(err.message || 'Media upload failed.'); }
 
   const existingPlans = products[id]?.plans || [];
   const planRows = document.querySelectorAll('.plan-item-row');
@@ -1514,6 +1590,7 @@ if (productFormEl) productFormEl.onsubmit = async e => {
     const pName = row.querySelector('.plan-name-input').value.trim();
     const pPrice = Number(row.querySelector('.plan-price-input').value);
     const pReseller = Number(row.querySelector('.plan-reseller-input').value);
+    const pSeller = Number(row.querySelector('.plan-seller-input').value);
     const prevKeys = existingPlans[i]?.keysPool || [];
     
     if(pName) {
@@ -1521,6 +1598,7 @@ if (productFormEl) productFormEl.onsubmit = async e => {
         name: pName,
         price: pPrice,
         resellerPrice: pReseller,
+        sellerPrice: pSeller,
         stock: prevKeys.length,
         keysPool: prevKeys
       });
@@ -1560,7 +1638,7 @@ function editProduct(id) {
   if ($('plansContainer')) {
     $('plansContainer').innerHTML = '';
     (p.plans || []).forEach(pl => {
-      $('plansContainer').appendChild(createPlanRow(pl.name, pl.price, pl.resellerPrice));
+      $('plansContainer').appendChild(createPlanRow(pl.name, pl.price, pl.resellerPrice, pl.sellerPrice ?? pl.resellerPrice));
     });
   }
   if ($('productFormTitle')) $('productFormTitle').textContent = `Edit Panel: ${p.name}`;
@@ -1658,10 +1736,10 @@ function renderProducts(){
                 <small style="color:var(--muted)">Media: ${window.esc(p.mediaType || 'none')}</small>
               </td>
               <td>${(p.plans||[]).map(pl=>`<span class="pill-plan">${window.esc(pl.name)}: ₹${pl.price} (Stock: <b>${(pl.keysPool||[]).length}</b>)</span>`).join('')}</td>
-              <td>
-                <button class="btn secondary" style="padding:4px 6px;font-size:10px" onclick="window.editProduct('${window.esc(id)}')">Edit</button>
-                <button class="btn danger" style="padding:4px 6px;font-size:10px" onclick="window.deleteProduct('${window.esc(id)}')">Del</button>
-              </td>
+              <td><div class="panel-action-row">
+                <button class="btn secondary" style="padding:6px 10px;font-size:11px" onclick="window.editProduct('${window.esc(id)}')">Edit</button>
+                <button class="btn danger" style="padding:6px 10px;font-size:11px" onclick="window.deleteProduct('${window.esc(id)}')">Delete</button>
+              </div></td>
             </tr>
           `).join('')}
         </tbody>
@@ -1870,31 +1948,25 @@ clearForm();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindToggle,{once:true});else bindToggle();
   new MutationObserver(bindToggle).observe(document.documentElement,{childList:true,subtree:true});
 })();
+
+
+// Standalone Seller Membership Plans (not tied to products or stock keys)
+let sellerMembershipPlans = {};
+const sellerMembershipFormEl = $('sellerMembershipForm');
+function renderSellerMembershipPlans(){
+  const host = $('sellerMembershipList'); if (!host) return;
+  const entries = Object.entries(sellerMembershipPlans || {});
+  if (!entries.length) { host.innerHTML = '<div class="empty">No seller membership plans yet. Create one above.</div>'; return; }
+  host.innerHTML = entries.map(([id,p]) => `<div class="panel" style="padding:12px;margin:0;box-shadow:none"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="min-width:0;flex:1"><b>${window.esc(p.name||'Seller Membership')}</b><div style="color:var(--cyan);font-weight:800;margin-top:4px">₹${Number(p.price||0).toFixed(2)} · ${window.esc(p.duration||'')}</div><div class="sub" style="margin-top:4px">${window.esc(p.description||'')}</div><div style="font-size:11px;margin-top:5px;color:${p.active===false?'var(--red)':'var(--green)'}">${p.active===false?'Disabled':'Available'}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" type="button" onclick="editSellerMembership('${id}')">Edit</button><button class="btn secondary" type="button" onclick="toggleSellerMembership('${id}')">${p.active===false?'Enable':'Disable'}</button><button class="btn danger" type="button" onclick="deleteSellerMembership('${id}')">Delete</button></div></div></div>`).join('');
+}
+function clearSellerMembershipForm(){ if(!$('sellerMembershipForm')) return; $('sellerMembershipForm').reset(); $('sellerMembershipId').value=''; $('sellerMembershipActive').checked=true; }
+window.editSellerMembership = id => { const p=sellerMembershipPlans[id]; if(!p)return; $('sellerMembershipId').value=id; $('sellerMembershipName').value=p.name||''; $('sellerMembershipPrice').value=Number(p.price||0); $('sellerMembershipDuration').value=p.duration||''; $('sellerMembershipDescription').value=p.description||''; $('sellerMembershipActive').checked=p.active!==false; navigateTo('view-seller-memberships'); window.scrollTo({top:0,behavior:'smooth'}); };
+window.toggleSellerMembership = async id => { const p=sellerMembershipPlans[id]; if(!p)return; try{await update(ref(db,'sellerMembershipPlans/'+id),{active:p.active===false,updatedAt:Date.now()});}catch(e){toast(e.message);} };
+window.deleteSellerMembership = async id => { if(!confirm('Delete this seller membership plan?'))return; try{await remove(ref(db,'sellerMembershipPlans/'+id)); if($('sellerMembershipId').value===id)clearSellerMembershipForm(); toast('Membership plan deleted');}catch(e){toast(e.message);} };
+if (sellerMembershipFormEl) sellerMembershipFormEl.addEventListener('submit', async e=>{e.preventDefault(); const id=$('sellerMembershipId').value||push(ref(db,'sellerMembershipPlans')).key; const plan={name:$('sellerMembershipName').value.trim(),price:Number($('sellerMembershipPrice').value),duration:$('sellerMembershipDuration').value.trim(),description:$('sellerMembershipDescription').value.trim(),active:$('sellerMembershipActive').checked,updatedAt:Date.now()}; if(!plan.name||!Number.isFinite(plan.price)||plan.price<=0||!plan.duration)return toast('Enter a valid name, price and validity'); try{await set(ref(db,'sellerMembershipPlans/'+id),plan);clearSellerMembershipForm();toast('Seller membership plan saved');}catch(err){toast(err.message);} });
+if ($('clearSellerMembershipBtn')) $('clearSellerMembershipBtn').onclick=clearSellerMembershipForm;
+onValue(ref(db,'sellerMembershipPlans'),snap=>{sellerMembershipPlans=snap.val()||{};renderSellerMembershipPlans();});
 </script>
 
-<script>
-(function removeGhostCapsule(){
-  const known = '#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"],#theme-palette,.theme-palette-ghost';
-  const remove = () => {
-    document.querySelectorAll(known).forEach(el => el.remove());
-    // Also remove the blank, centered capsule injected by the old theme widget.
-    document.querySelectorAll('body *').forEach(el => {
-      if (el.matches('script,style,svg,path,nav,button,a,input,textarea,select,label,.bottom-bar,.bottom-item,#floatingSupportBtn')) return;
-      if (el.children.length || (el.textContent || '').trim()) return;
-      const r = el.getBoundingClientRect();
-      if (r.width < 24 || r.width > 100 || r.height < 12 || r.height > 42) return;
-      if (Math.abs((r.left + r.right) / 2 - window.innerWidth / 2) > 22) return;
-      if (r.bottom < window.innerHeight - 240 || r.top > window.innerHeight + 5) return;
-      const cs = getComputedStyle(el);
-      if (cs.position !== 'fixed' && cs.position !== 'absolute' && cs.position !== 'sticky') return;
-      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') return;
-      el.remove();
-    });
-  };
-  remove();
-  if (document.body && window.MutationObserver) new MutationObserver(remove).observe(document.body,{childList:true,subtree:true});
-  window.addEventListener('load', remove); window.addEventListener('resize', remove);
-})();
-</script>
 </body>
 </html>
