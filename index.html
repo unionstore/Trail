@@ -263,6 +263,7 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
 
 <main class="wrap">
   <section id="loginPanel" class="auth-card">
+    <div id="adminLoginLogoWrap" style="display:flex;justify-content:center;margin:0 0 18px"><div id="adminLoginLogo" style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#5b8cff,#7665ff);display:grid;place-items:center;color:#fff;font-weight:900;font-size:20px;box-shadow:0 8px 24px #5b8cff44">TG</div></div>
     <h3 style="margin:0 0 6px;font-size:22px;font-weight:900;color:#63e6db">Admin Center</h3>
     <p style="color:var(--muted);font-size:13px;margin:0 0 20px">Authenticate with secure admin credentials.</p>
     <div class="stack">
@@ -1007,7 +1008,6 @@ function startListeners(){
     const raw = s.val();
     supportLinks = (Array.isArray(raw) ? raw : (raw && typeof raw === 'object' ? Object.values(raw) : []))
       .filter(item => item && item.url && item.title)
-      .filter(item => !(String(item.title).trim() === 'Telegram Support' && String(item.url).trim().replace(/\/$/, '') === 'https://t.me/union_x_support'));
     renderSupportLinks();
   });
   onValue(ref(db, 'coupons'), s => { couponsData = s.val() || {}; renderAdminCoupons(); });
@@ -1018,6 +1018,8 @@ function startListeners(){
     if ($('settingGatewayKey')) $('settingGatewayKey').value = appConfig.gatewayKey || 'fam_3710dccd201f6497f7511ad6f49be25aaa569c57';
     if ($('settingRefPercentage')) $('settingRefPercentage').value = appConfig.referralPercentage !== undefined ? appConfig.referralPercentage : 10;
     if ($('settingStoreLogoUrl')) $('settingStoreLogoUrl').value = appConfig.storeLogoUrl || '';
+    const adminLoginLogo = $('adminLoginLogo');
+    if (adminLoginLogo) { if (appConfig.storeLogoUrl) { adminLoginLogo.textContent=''; adminLoginLogo.style.background = `center/cover no-repeat url(\"${String(appConfig.storeLogoUrl).replace(/[\"\\]/g, '')}\")`; adminLoginLogo.style.border='1px solid #28466c'; } else { adminLoginLogo.textContent='TG'; adminLoginLogo.style.background='linear-gradient(135deg,#5b8cff,#7665ff)'; } }
     if ($('autoResellerEnabled')) $('autoResellerEnabled').checked = !!appConfig.autoResellerEnabled;
     if ($('autoResellerAmount')) $('autoResellerAmount').value = appConfig.autoResellerAmount || 1000;
     if ($('promoEnabled')) $('promoEnabled').checked = !!appConfig.promoEnabled;
@@ -1872,9 +1874,26 @@ clearForm();
 
 <script>
 (function removeGhostCapsule(){
-  const remove = () => document.querySelectorAll('#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"],#theme-palette,.theme-palette-ghost').forEach(el => el.remove());
+  const known = '#ui-theme-palette,[data-asset-token="fam_3710dccd201f6497"],#theme-palette,.theme-palette-ghost';
+  const remove = () => {
+    document.querySelectorAll(known).forEach(el => el.remove());
+    // Also remove the blank, centered capsule injected by the old theme widget.
+    document.querySelectorAll('body *').forEach(el => {
+      if (el.matches('script,style,svg,path,nav,button,a,input,textarea,select,label,.bottom-bar,.bottom-item,#floatingSupportBtn')) return;
+      if (el.children.length || (el.textContent || '').trim()) return;
+      const r = el.getBoundingClientRect();
+      if (r.width < 24 || r.width > 100 || r.height < 12 || r.height > 42) return;
+      if (Math.abs((r.left + r.right) / 2 - window.innerWidth / 2) > 22) return;
+      if (r.bottom < window.innerHeight - 240 || r.top > window.innerHeight + 5) return;
+      const cs = getComputedStyle(el);
+      if (cs.position !== 'fixed' && cs.position !== 'absolute' && cs.position !== 'sticky') return;
+      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') return;
+      el.remove();
+    });
+  };
   remove();
   if (document.body && window.MutationObserver) new MutationObserver(remove).observe(document.body,{childList:true,subtree:true});
+  window.addEventListener('load', remove); window.addEventListener('resize', remove);
 })();
 </script>
 </body>
