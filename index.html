@@ -487,7 +487,10 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
           <input id="sellerMembershipName" class="field" required maxlength="60" placeholder="Plan name (e.g. Seller Monthly)">
           <input id="sellerMembershipPrice" class="field" type="number" min="1" step="1" required placeholder="Membership price ₹">
           <input id="sellerMembershipDuration" class="field" required maxlength="40" placeholder="Validity (e.g. Lifetime, 30 Days)">
-          <textarea id="sellerMembershipDescription" class="field" rows="3" placeholder="Benefits and details (optional)"></textarea>
+          
+          <!-- ✅ UPDATED TEXTAREA PLACEHOLDER -->
+          <textarea id="sellerMembershipDescription" class="field" rows="4" placeholder="Features (1 line = 1 feature)&#10;e.g. 24/7 Priority Support&#10;Instant Key Delivery&#10;Lowest Reseller Prices"></textarea>
+          
           <label class="remember-row"><input id="sellerMembershipActive" type="checkbox" checked> Available for purchase</label>
           <div style="display:flex;gap:8px"><button class="btn primary" type="submit" style="flex:1">Save Membership Plan</button><button class="btn secondary" type="button" id="clearSellerMembershipBtn">Clear</button></div>
         </form>
