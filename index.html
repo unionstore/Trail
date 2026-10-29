@@ -74,6 +74,7 @@ button{cursor:pointer;border:0}
 .pill.delivered{background:#113827;color:#86efac}
 .pill.pending{background:#3d2f16;color:#fcd34d}
 .pill.highlight{background:#5b8cff;color:#fff;box-shadow:0 0 10px rgba(91,140,255,0.5);}
+.pill-plan{display:inline-block;padding:2px 6px;border-radius:5px;font-size:10.5px;background:#172539;border:1px solid #273a55;margin:2px;color:#d2dff2}
 
 /* ✅ COMPACT PLAN ROW */
 .plans-builder-box{background:#080c16;border:1px solid #1f2c42;border-radius:12px;padding:10px;overflow-x:auto;}
@@ -381,7 +382,17 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
         <form id="productForm" class="stack">
           <input id="productId" type="hidden">
           
-          <input id="productName" class="field" required placeholder="Panel / Product Name">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div style="flex:1; min-width:200px;">
+              <label style="font-size:11px;color:var(--muted)">Product Name</label>
+              <input id="productName" class="field" required placeholder="Panel / Product Name">
+            </div>
+            <div style="flex:1; min-width:150px;">
+              <label style="font-size:11px;color:var(--muted)">Product ID (Optional)</label>
+              <input id="customProductIdInput" class="field" placeholder="e.g. PROD-101 (Auto if blank)" style="font-family:monospace; text-transform:uppercase;">
+            </div>
+          </div>
+
           <input id="productCategory" class="field" required placeholder="Category (e.g. Scrim, VIP)">
           <textarea id="productDescription" class="field" style="height:75px" placeholder="Features (1 line = 1 feature)&#10;Drag Headshot&#10;Moco Location&#10;Freeze Enemies"></textarea>
 
@@ -488,7 +499,6 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
           <input id="sellerMembershipPrice" class="field" type="number" min="1" step="1" required placeholder="Membership price ₹">
           <input id="sellerMembershipDuration" class="field" required maxlength="40" placeholder="Validity (e.g. Lifetime, 30 Days)">
           
-          <!-- ✅ UPDATED TEXTAREA PLACEHOLDER -->
           <textarea id="sellerMembershipDescription" class="field" rows="4" placeholder="Features (1 line = 1 feature)&#10;e.g. 24/7 Priority Support&#10;Instant Key Delivery&#10;Lowest Reseller Prices"></textarea>
           
           <label class="remember-row"><input id="sellerMembershipActive" type="checkbox" checked> Available for purchase</label>
@@ -631,7 +641,6 @@ button:disabled,.btn:disabled{cursor:wait;opacity:.68;filter:saturate(.7)}
           <input id="settingStoreLogoUrl" class="field" placeholder="https://... logo image URL">
           <input id="settingStoreLogoFile" class="field" type="file" accept="image/*" style="padding:7px">
 
-          <!-- ✅ NAYA FIELD: Reseller Activation Minimum Balance -->
           <hr style="border:0;border-top:1px solid var(--line);width:100%">
           <h4 style="margin:0;color:var(--gold)">Reseller Activation (Manual Click) Settings</h4>
           <label style="font-size:11.5px;color:var(--muted)">Minimum Single Deposit Required to Activate Reseller (₹)</label>
@@ -1162,7 +1171,6 @@ if (saveAdminUidBtnEl) saveAdminUidBtnEl.onclick = async () => {
   }
 };
 
-// ✅ Fix: Defining the function explicitly on window object so inline onclick can access it.
 window.removeDiscount = async function(pId) {
   if(confirm('Are you sure you want to delete this discount?')) {
     try {
@@ -1183,7 +1191,7 @@ function startListeners(){
     renderStockVault(); 
     renderWizardStep1(); 
     stats(); 
-    populateProductDropdowns(); // ✅ Dropdowns update honge products aate hi
+    populateProductDropdowns(); 
   });
   onValue(ref(db, 'orders'), s => { orders = s.val() || {}; renderOrders(); stats(); });
   onValue(ref(db, 'users'), s => { users = s.val() || {}; renderUsers(); });
@@ -1201,7 +1209,7 @@ function startListeners(){
   onValue(ref(db, 'productDiscounts'), s => {
     productDiscounts = s.val() || {};
     renderDiscounts();
-    populateProductDropdowns(); // ✅ Discount data aate hi refresh
+    populateProductDropdowns(); 
   });
 
   onValue(ref(db, 'appConfig'), s => {
@@ -1263,7 +1271,6 @@ function stats(){
   if ($('statTotalStock')) $('statTotalStock').textContent = totalKeys;
 }
 
-// ✅ Function using the defined global removeDiscount
 function renderDiscounts() {
   const tableEl = $('discountTable');
   if (!tableEl) return;
@@ -1767,6 +1774,7 @@ if (addPlanBtnEl) addPlanBtnEl.onclick = () => {
 
 function clearForm(){
   if ($('productId')) $('productId').value = '';
+  if ($('customProductIdInput')) $('customProductIdInput').value = '';
   if ($('productName')) $('productName').value = '';
   if ($('productCategory')) $('productCategory').value = '';
   if ($('productDescription')) $('productDescription').value = '';
@@ -1793,6 +1801,16 @@ function clearForm(){
 const clearFormBtnEl = $('clearFormBtn');
 if (clearFormBtnEl) clearFormBtnEl.onclick = clearForm;
 
+// ✅ Custom ID generate karne ka function
+function generateCustomProductId() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = 'PROD-';
+  for (let i = 0; i < 5; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 const productFormEl = $('productForm');
 if (productFormEl) productFormEl.onsubmit = async e => {
   e.preventDefault();
@@ -1804,7 +1822,32 @@ if (productFormEl) productFormEl.onsubmit = async e => {
   let mediaType = $('mediaTypeSelect').value;
   let mediaUrl = $('productMediaUrl').value.trim();
   const fileInput = $('productMediaFileInput');
-  const id = $('productId').value || push(ref(db, 'products')).key;
+  
+  // ==========================================
+  // ✅ NAYA ID GENERATION LOGIC YAHAN HAI
+  // ==========================================
+  let id = $('productId').value; 
+  const customId = $('customProductIdInput')?.value.trim().toUpperCase();
+
+  if (!id) {
+    // Naya product ban raha hai
+    if (customId) {
+      if (products[customId]) return toast('Yeh ID pehle se exist karti hai. Doosri ID daalein.');
+      id = customId;
+    } else {
+      id = generateCustomProductId();
+      while (products[id]) {
+        id = generateCustomProductId();
+      }
+    }
+  } else if (customId && customId !== id) {
+    // Purana product edit ho raha hai aur ID change ki gayi hai
+    if (products[customId]) return toast('Yeh nayi ID pehle se exist karti hai.');
+    // Purani ID delete karein aur nayi ID assign karein
+    await remove(ref(db, 'products/' + id));
+    id = customId;
+  }
+  // ==========================================
 
   try {
     const file = mediaType === 'file_upload' ? fileInput?.files?.[0] : null;
@@ -1865,7 +1908,7 @@ if (productFormEl) productFormEl.onsubmit = async e => {
 
   try{
     await set(ref(db, 'products/' + id), productData);
-    toast('Panel & Media saved successfully!');
+    toast('Panel saved! ID: ' + id);
     clearForm();
   }catch(err){ toast(err.message); }
 };
@@ -1874,6 +1917,7 @@ function editProduct(id) {
   const p = products[id];
   if(!p) return;
   if ($('productId')) $('productId').value = id;
+  if ($('customProductIdInput')) $('customProductIdInput').value = id; 
   if ($('productName')) $('productName').value = p.name || '';
   if ($('productCategory')) $('productCategory').value = p.category || '';
   if ($('productDescription')) $('productDescription').value = p.description || '';
@@ -1884,7 +1928,6 @@ function editProduct(id) {
   if ($('supplierSelect')) $('supplierSelect').value = p.supplierType || 'manual';
   if ($('bantiPid')) $('bantiPid').value = p.bantiPid || '';
   
-  // Toggle fields without losing data
   if ($('fieldsBanti')) $('fieldsBanti').style.display = p.supplierType === 'bantibhaiya' ? 'block' : 'none';
 
   if ($('plansContainer')) {
@@ -1982,7 +2025,7 @@ function renderProducts(){
         <tbody>
           ${rows.map(([id,p])=>`
             <tr>
-              <td><b>${window.esc(p.name)} ${p.isPinned ? '📌' : ''}</b></td>
+              <td><b>${window.esc(p.name)} ${p.isPinned ? '📌' : ''}</b><br><small style="color:var(--cyan);font-family:monospace">ID: ${window.esc(id)}</small></td>
               <td>
                 <span class="pill-plan">${window.esc(p.category||'General')}</span><br>
                 <small style="color:var(--muted)">Media: ${window.esc(p.mediaType || 'none')}</small><br>
@@ -2041,12 +2084,17 @@ function renderOrders(){
     orderTableEl.innerHTML = rows.length ? `
       <table class="table">
         <thead>
-          <tr><th>Product / Phone</th><th>Method / ₹</th><th>Auto-Dispatched Key</th><th>Status</th></tr>
+          <tr><th>Order ID / Product</th><th>Method / ₹</th><th>Auto-Dispatched Key</th><th>Status</th></tr>
         </thead>
         <tbody>
           ${rows.map(([id,o])=>`
             <tr>
-              <td><b>${window.esc(o.productName)}</b><br><small class="muted">${window.esc(o.planName)}</small><br><span style="color:var(--cyan)">Ph: ${window.esc(o.phone||'N/A')}</span></td>
+              <td>
+                <small style="color:var(--cyan);font-family:monospace">#${window.esc(id)}</small><br>
+                <b>${window.esc(o.productName)}</b><br>
+                <small class="muted">${window.esc(o.planName)} • Qty: ${o.quantity || 1}</small><br>
+                <span style="color:var(--cyan)">Ph: ${window.esc(o.phone||'N/A')}</span>
+              </td>
               <td><span class="pill ${o.paymentMethod==='wallet'?'delivered':'pending'}">${window.esc((o.paymentMethod||'UPI').toUpperCase())}</span><br><b>₹${Number(o.amount||0).toFixed(2)}</b></td>
               <td><code style="color:var(--cyan);font-weight:700;font-size:11px">${window.esc(o.deliveryDetails||'Pending')}</code></td>
               <td><span class="pill ${o.status==='delivered'?'delivered':'pending'}">${window.esc(o.status||'pending')}</span></td>
